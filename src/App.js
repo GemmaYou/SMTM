@@ -50,8 +50,6 @@ class App extends React.Component {
         holder: "",
         value: "",
         done: false
-      },
-      listChange: {
       }
     };
   }
@@ -74,7 +72,11 @@ class App extends React.Component {
             .get()
             .then(function(querySnapshot) {
                 querySnapshot.forEach(function(doc) {
-                  userAct.push(doc.data());
+                  let data = {
+                    data: doc.data(),
+                    id: doc.id
+                  }
+                  userAct.push(data);
                 });
             })
             .catch(function(error) {
@@ -82,8 +84,7 @@ class App extends React.Component {
             });
 
             this.setState({
-              activity: userAct,
-              listChange: userAct
+              activity: userAct
             })
         }
       } else {
@@ -102,8 +103,6 @@ class App extends React.Component {
             holder: "",
             value: "",
             done: false
-          },
-          listChange: {
           }
         });
         console.log("no one log in");
@@ -188,7 +187,11 @@ class App extends React.Component {
     this.setState({
       additem : {
         ...this.state.additem,
-        date: e.target.value
+        date: e.target.value,
+        holder: {
+          name:this.state.user.name,
+          email:this.state.user.email
+        }
       }
     });
   };
@@ -212,21 +215,18 @@ class App extends React.Component {
   };
 
   addFinal(){
-    let userAct =[]; //this.state.activity
+    let userAct = this.state.activity;
     let kind = this.state.additem.kind;
     let place = this.state.additem.place;
     let date = this.state.additem.date;
-    let holder = this.state.additem.holder;
     let value = this.state.additem.value;
     if (kind === "once"){
       if (date === "") {
         alert ("請填入時間！")
-      } else if (holder === "") {
-        alert ("請填入此次atm是誰！")
       } else if (value === "") {
         alert ("請填入此次金額！")
       } else {
-        //userAct.push(this.state.additem)
+        // userAct.push(this.state.additem)
         DB.collection("activity") //建立DB資料
           .add(
             this.state.additem,
@@ -251,7 +251,11 @@ class App extends React.Component {
           .get()
           .then(function(querySnapshot) {
               querySnapshot.forEach(function(doc) {
-                userAct.push(doc.data());
+                let data = {
+                  data: doc.data(),
+                  id: doc.id
+                }
+                userAct.push(data);
               });
           })
           .catch(function(error) {
@@ -259,8 +263,7 @@ class App extends React.Component {
           });
 
           this.setState({
-            activity: userAct,
-            listChange: userAct
+            activity: userAct
           });
         window.location.href = "./#/chapter";
       }
@@ -311,27 +314,6 @@ class App extends React.Component {
     }
   }
 
-  listChangeToAll(){
-    let listChange = this.state.activity;
-    this.setState({
-      listChange: listChange
-    })
-  }
-
-  listChangeToUndo(){
-    let listChange = this.state.activity.filter(item => !item.done);
-    this.setState({
-      listChange: listChange
-    })
-  }
-
-  listChangeToDone(){
-    let listChange = this.state.activity.filter(item => item.done);
-    this.setState({
-      listChange: listChange
-    })
-  }
-
   render() {
     console.log(this.state);
     let mystyle = {
@@ -347,9 +329,8 @@ class App extends React.Component {
           <div className="main">
             {this.state.redirect ? <Redirect push to="/activity"/> :
               <Switch>
-                  <Route path="/chapter">
-                    <List listChange={this.state.listChange} listChangeToAll={this.listChangeToAll.bind(this)}
-                    listChangeToUndo={this.listChangeToUndo.bind(this)} listChangeToDone={this.listChangeToDone.bind(this)}/>
+                  <Route path="/list">
+                    <List user={this.state.user}/>
                   </Route>
                   <Route path="/activity">
                     <Activity activity={this.state.activity}/>

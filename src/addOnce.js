@@ -45,11 +45,6 @@ class AddOnce extends React.Component {
              />
           </div>
           <div className="item">
-            <img src={atmPNG} className="activity-icon" />
-            <input type="text" value={holder} placeholder="誰是此次提款機" className="addActInfo" onChange={this.props.addOnChangeHolder}
-             />
-          </div>
-          <div className="item">
             <img src={valuePNG} className="activity-icon" />
             <input type="number" value={value} placeholder="請輸入此次總額" className="addActInfo" onChange={this.props.addOnChangeValue}
              />

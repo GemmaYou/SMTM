@@ -12,7 +12,7 @@ import atm from "./img/ATM.png";
 import value from "./img/value.png";
 import user from "./img/user.png";
 import halfdone from "./img/halfdone.png";
-import doneCheck from "./img/doneCheck.png";
+import doneCheck from "./img/donecheck.png";
 
 
 class Mobile extends React.Component {

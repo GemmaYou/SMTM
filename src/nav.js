@@ -19,7 +19,7 @@ class Nav extends React.Component {
     };
     return <nav>
         <ul className="titleList">
-            <Link to="/chapter" style={mystyle}><div className="list-item">List</div></Link>
+            <Link to="/list" style={mystyle}><div className="list-item">List</div></Link>
             <Link to="/activity" style={mystyle}><div className="list-item">Activity</div></Link>
             <Link to="/member" ><img src={login} alt="login" className="login" id="login" /></Link>
         </ul>

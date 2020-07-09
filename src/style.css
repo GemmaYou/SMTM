@@ -144,13 +144,25 @@ body{
   width: 99.5%;
 }
 
+.listBox>.list>.item>.check {
+  grid-area: 1 / 1 / 2 / 2;
+}
+
+.listBox>.list>.item>.listItemName {
+  grid-area: 1 / 2 / 2 / 3;
+}
+
+.listBox>.list>.item>.trashImg {
+  grid-area: 1 / 3 / 2 / 4;
+}
+
 .listBox>.list>.item>* {
   margin: 5px 0;
 }
 
-.listBox>.list>.item>.check {
+/* .listBox>.list>.item>.check {
   margin-left: 5px;
-}
+} */
 
 .listBox>.btn>*{
   margin: 2px;
