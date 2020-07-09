@@ -1,0 +1,633 @@
+/* @import url(https://fonts.googleapis.com/earlyaccess/notosanstc.css); */
+body{
+  margin: 0;
+  font-family: "notosanstc", "Noto Sans TC", "微軟正黑體", arial, sans-serif;
+}
+
+/*--------------------Nav--------------------*/
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #FDFEE8;
+}
+
+.titleList {
+  display: flex;
+  list-style: none;
+  justify-content: space-between;
+  width: 30vw;
+  text-align: center;
+}
+
+@media all and (max-width: 500px) {
+  .titleList {
+    width: 40vw;
+  }
+}
+
+.list-item {
+  height: 30px;
+  line-height: 30px;
+}
+
+.main {
+  margin: 20px 10px;
+}
+
+.backToHome {
+  margin-top: 50px;
+}
+
+.login {
+  width: 30px;
+  height: 30px;
+}
+
+
+/*--------------------List--------------------*/
+
+.addImg,
+.link,
+.inviteImg,
+.searchImg,
+.check {
+  width: 30px;
+  height: 30px;
+}
+
+.trashImg {
+  width: 25px;
+  height: 25px;
+}
+
+.listBox {
+  max-width: 500px;
+  min-height: 500px;
+  border: 1px solid #FFE699;
+  border-radius: 50px;
+  display: grid;
+  grid-template-columns: 5px repeat(2, 1fr) 5px;
+  grid-auto-rows: 30px 50px 50px auto 50px;
+  /* align-items: center; */
+  justify-content: center;
+  text-align: center;
+  margin: 0 auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.listBox>.search {
+  grid-area: 1 / 3 / 2 / 4;
+  width: 80%;
+  border: 1px solid #FFE699;
+}
+
+.listBox>.search>input {
+  border: none;
+}
+
+@media all and (max-width: 500px) {
+  .listBox>.search>input {
+    width: 80px;
+  }
+}
+
+.listBox>.userName {
+  grid-area: 2 / 2 / 3 / 4;
+  font-size: 20px;
+  margin: auto;
+}
+
+.listBox>.add {
+  grid-area: 3 / 2 / 4 / 3;
+  height: 50px;
+}
+
+.listBox>.invite {
+  grid-area: 3 / 3 / 4 / 4;
+  height: 50px;
+}
+
+.listBox>.list {
+  grid-area: 4 / 2 / 5 / 4;
+  border-top: 1px solid #FFE699;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.listBox>.btn {
+  grid-area: 5 / 2 / 6 / 4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.listBox>.add,
+.listBox>.invite,
+.listBox>.search {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.listBox>.list>.item {
+  display: grid;
+  grid-template-columns: 40px auto 40px;
+  grid-auto-rows: 100%;
+  align-items: center;
+  margin-top: 10px;
+  border: 1px solid #FFE699;
+  text-align: left;
+  width: 99.5%;
+}
+
+.listBox>.list>.item>* {
+  margin: 5px 0;
+}
+
+.listBox>.list>.item>.check {
+  margin-left: 5px;
+}
+
+.listBox>.btn>*{
+  margin: 2px;
+  background-color: #FDFEE8;
+  border: 1px solid #FFE699;
+  width: 25%;
+  height: 30px;
+}
+
+/*--------------------Activity--------------------*/
+
+.activityBox {
+  max-width: 1000px;
+  min-height: 500px;
+  border: 1px solid #FFE699;
+  border-radius: 50px;
+  display: grid;
+  grid-template-columns: 5px repeat(4, 1fr) 5px;
+  grid-auto-rows: 30px 50px 50px auto 50px;
+  /* align-items: center; */
+  justify-content: center;
+  text-align: center;
+  margin: 0 auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.activityBox>.condition {
+  grid-area: 1 / 2 / 2 / 4;
+  display: flex;
+  align-items: center;
+  margin: auto;
+  width: 80%;
+}
+
+.activityBox>.condition>.activity-icon{
+  margin-right: 5px;
+}
+
+.activityBox>.search {
+  grid-area: 1 / 5 / 2 / 6;
+  width: 80%;
+  border: 1px solid #FFE699;
+}
+
+.activityBox>.search>input {
+  border: none;
+}
+
+.activityBox>.userName {
+  grid-area: 2 / 2 / 3 / 4;
+  font-size: 20px;
+  margin: auto;
+}
+
+.activityBox>.add {
+  grid-area: 3 / 2 / 4 / 3;
+  height: 50px;
+}
+
+.activityBox>.invite {
+  grid-area: 3 / 3 / 4 / 4;
+  height: 50px;
+}
+
+.activityBox>.act-list {
+  grid-area: 4 / 2 / 5 / 4;
+  border-top: 1px solid #FFE699;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.activityBox>.act-member {
+  display: block;
+  grid-area: 2 / 4 / 5 / 6;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.activityBox>.ac-btn{
+  display: none;
+}
+
+/* .activityBox>.ac-btn {
+  grid-area: 5 / 2 / 6 / 4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} */
+
+.activityBox>.add,
+.activityBox>.invite,
+.activityBox>.search {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.activityBox>.act-list>.item {
+  display: grid;
+  grid-template-columns: 40px auto 100px;
+  grid-auto-rows: 100%;
+  align-items: center;
+  margin-top: 10px;
+  border: 1px solid #FFE699;
+  text-align: left;
+  width: 99.5%;
+  height: 50px;
+}
+
+.activityBox>.act-member>.item {
+  display: grid;
+  grid-template-columns: 40px auto 100px;
+  grid-auto-rows: 100%;
+  align-items: center;
+  margin-top: 10px;
+  border: 1px solid #FFE699;
+  text-align: left;
+  width: 100%;
+  height: 50px;
+}
+
+.perValue {
+  text-align: right;
+  margin-right: 5px;
+}
+
+.userImg {
+  width: 30px;
+  height: 30px;
+}
+
+.activity-icon {
+  width: 30px;
+  height: 30px;
+  margin-left: 5px;
+}
+
+.activityBox>.list>.item>* {
+  margin: 5px 0;
+}
+
+.activityBox>.list>.item>.check {
+  margin-left: 5px;
+}
+
+.ac-btn>* {
+  margin: 2px;
+  background-color: #FDFEE8;
+  border: 1px solid #FFE699;
+  width: 40%;
+  height: 30px;
+}
+
+@media all and (max-width: 1000px) {
+  .activityBox {
+    max-width: 500px;
+    min-height: 500px;
+    grid-template-columns: 5px repeat(2, 1fr) 5px;
+    grid-auto-rows: 30px 50px 50px auto 50px;
+  }
+
+  .activityBox>.condition {
+    grid-area: 1 / 2 / 2 / 3;
+    width: 70%;
+  }
+
+  .activityBox>.search {
+    grid-area: 1 / 3 / 2 / 4;
+  }
+
+  .activityBox>.userName {
+    grid-area: 2 / 2 / 3 / 4;
+    font-size: 20px;
+    margin: auto;
+  }
+
+  .activityBox>.act-list>.item {
+    /* display: grid; */
+    grid-template-columns: 40px auto;
+    /* grid-auto-rows: 100%;
+    align-items: center;
+    margin-top: 10px;
+    border: 1px solid #FFE699;
+    text-align: left;
+    width: 99.5%;
+    height: 50px; */
+  }
+
+  .activityBox>.act-member {
+    border-top: 1px solid #FFE699;
+    grid-area: 4 / 2 / 5 / 4;
+    display: none;
+  }
+
+  .activityBox>.act-member>.item {
+    height: 30px;
+  }
+
+  .activityBox>.ac-btn {
+    display: block;
+    grid-area: 5 / 2 / 6 / 4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+@media all and (max-width: 500px) {
+  .activityBox>.search>input {
+    width: 80px;
+  }
+}
+
+/*--------------------Login--------------------*/
+.account {
+  max-width: 600px;
+  height: 300px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 30px 370px;
+  margin: auto;
+  border: 1px solid #FFE699;
+  border-radius: 30px;
+}
+
+.setAccount,
+.signinAccount {
+  max-width: 300px;
+  min-height: 300px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.setAccount>div>input,
+.signinAccount>div>input {
+  border: 1px solid #FFE699;
+}
+
+.member-sub {
+  grid-area: 1 / 1 / 2 / 2 ;
+  background-color: white;
+  border: none;
+  margin: auto;
+  width: 100%;
+  height: 30px;
+  border-top-left-radius: 30px;
+}
+
+.member-sign {
+  grid-area: 1 / 2 / 2 / 3 ;
+  background-color: white;
+  border: none;
+  margin: auto;
+  width: 100%;
+  height: 30px;
+  background-color: #FDFEE8;
+  border-top-right-radius: 30px;
+}
+
+.setAccount {
+  grid-area: 2 / 1 / 3 / 3 ;
+}
+
+.submit-btn,
+.signin-btn {
+  text-align: right;
+}
+
+.submit-btn>*,
+.signin-btn>* {
+  margin: 2px;
+  background-color: #FDFEE8;
+  border: 1px solid #FFE699;
+}
+
+.signinAccount {
+  grid-area: 2 / 1 / 3 / 3 ;
+  display: none;
+}
+
+/*--------------------memberInfo--------------------*/
+.memberInfo {
+  max-width: 500px;
+  margin: auto;
+  border: 1px solid #FFE699;
+  border-radius: 30px;
+}
+
+.member-title {
+  max-width: 500px;
+  height: 50px;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 50px;
+  border-bottom: 1px solid #FFE699;
+  text-align: center;
+}
+
+.info {
+  max-width: 300px;
+  height: 100px;
+  margin: 50px auto 0px;
+  text-align: left;
+}
+
+.info-btn {
+  text-align: right;
+}
+
+.logout-btn {
+  margin: 2px;
+  background-color: #FDFEE8;
+  border: 1px solid #FFE699;
+}
+
+/*--------------------add--------------------*/
+.addBox {
+  max-width: 500px;
+  min-height: 500px;
+  border: 1px solid #FFE699;
+  border-radius: 50px;
+  display: grid;
+  grid-template-columns: 5px repeat(2, 1fr) 5px;
+  grid-auto-rows: 30px 50px auto 50px;
+  /* align-items: center; */
+  justify-content: center;
+  text-align: center;
+  margin: 0 auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.addBox>.addActNameDiv {
+  grid-area: 1 / 2 / 3 / 4;
+  margin: auto;
+  width: 80%;
+}
+
+.addBox>.list {
+  grid-area: 3 / 2 / 4 / 4;
+  border-top: 1px solid #FFE699;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.addBox>.add,
+.addBox>.invite,
+.addBox>.search {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.addBox>.list>.item {
+  /* display: grid;
+  grid-template-columns: 40px auto 40px;
+  grid-auto-rows: 100%; */
+  align-items: center;
+  margin-top: 10px;
+  border: 1px solid #FFE699;
+  text-align: left;
+  width: 99.5%;
+}
+
+.addBox>.list>.item>div {
+  margin: 15px 10px;
+}
+
+.addBox>.list>.item>div>label {
+  cursor:pointer;
+}
+
+.addBox>.list>.item>div>label>* {
+  margin: 0 10px;
+}
+
+.addActName {
+  border: none;
+  width: 100%;
+  font-size: 25px;
+  text-align: center;
+}
+
+.nextStep {
+  /* margin: 2px; */
+  background-color: #FDFEE8;
+  border: 1px solid #FFE699;
+  height: 40px;
+  grid-area: 4 / 2 / 5 / 4;
+  width: 80%;
+  margin: 0 auto;
+}
+
+/*--------------------addOnce--------------------*/
+.addOnceBox {
+  width: 500px;
+  height: 500px;
+  border: 1px solid #FFE699;
+  border-radius: 50px;
+  display: grid;
+  grid-template-columns: 5px 1fr 5px;
+  grid-auto-rows: 80px 1fr 50px;
+  /* align-items: center; */
+  justify-content: center;
+  text-align: center;
+  margin: 0 auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.addOnceBox>.activityName {
+  grid-area: 1 / 2 / 2 / 3;
+  font-size: 25px;
+  margin: auto;
+}
+
+.addOnceBox>.act-list {
+  grid-area: 2 / 2 / 3 / 3;
+  border-top: 1px solid #FFE699;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.addOnceBox>.act-list>.item {
+  display: grid;
+  grid-template-columns: 40px 360px;
+  grid-auto-rows: 100%;
+  align-items: center;
+  margin-top: 10px;
+  border: 1px solid #FFE699;
+  text-align: left;
+  width: 100%;
+  height: 52px;
+}
+
+.addActInfo {
+  border: none;
+  width: 96%;
+  font-size: 16px;
+  text-align: left;
+  height: 50px;
+}
+
+.perValue {
+  text-align: right;
+  margin-right: 5px;
+}
+
+.userImg {
+  width: 30px;
+  height: 30px;
+}
+
+.addOnceBox>.list>.item>* {
+  margin: 5px 0;
+}
+
+.addOnceBox>.list>.item>.check {
+  margin-left: 5px;
+}
+
+/* @media all and (max-width: 1000px) {
+  .addOnceBox {
+    max-width: 500px;
+    min-height: 500px;
+    grid-template-columns: 5px repeat(2, 1fr) 5px;
+    grid-auto-rows: 30px 50px 50px auto 50px;
+  }
+
+  .addOnceBox>.userName {
+    grid-area: 2 / 2 / 3 / 4;
+    font-size: 20px;
+    margin: auto;
+  }
+
+  .addOnceBox>.act-list>.item {
+    grid-template-columns: 40px auto;
+  }
+} */
