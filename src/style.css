@@ -157,7 +157,7 @@ body{
 }
 
 .listBox>.list>.item>* {
-  margin: 5px 0;
+  margin: 5px;
 }
 
 /* .listBox>.list>.item>.check {
@@ -170,6 +170,14 @@ body{
   border: 1px solid #FFE699;
   width: 25%;
   height: 30px;
+}
+
+.btnClicked {
+  background-color: #FFFFFF;
+}
+
+.btnUnclicked {
+  background-color: #FDFEE8;
 }
 
 /*--------------------Activity--------------------*/

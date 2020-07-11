@@ -57,9 +57,6 @@ class AddPeriod extends React.Component {
         </div>
         <button className="nextStep" onClick={()=> this.props.addFinal()}>下一步</button>
       </div>
-      <div className="backToHome">
-        <Link to="/" style={mystyle}>&#10150; Back To Home</Link>
-      </div>
     </>;
   }
 }

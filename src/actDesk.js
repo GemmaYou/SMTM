@@ -21,24 +21,25 @@ class Desk extends React.Component {
   }
 
   render() {
+    let data = this.props.data
     console.log(this.props)
     return <>
         <div className="act-list" id="act-list">
           <div className="item">
             <img src={location} className="activity-icon" />
-            <div>Appworks School</div>
+            <div>{data.place}</div>
           </div>
           <div className="item">
             <img src={date} className="activity-icon" />
-            <div>0707 19:00</div>
+            <div>{data.date}</div>
           </div>
           <div className="item">
             <img src={atm} className="activity-icon" />
-            <div>Gemma</div>
+            <div>{data.holder.name}</div>
           </div>
           <div className="item">
             <img src={value} className="activity-icon" />
-            <div>NT$2130</div>
+            <div>NT$ {data.value}</div>
           </div>
         </div>
         <div className="act-member" id="act-member">

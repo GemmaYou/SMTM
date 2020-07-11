@@ -2,7 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom";
 import './style.css';
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
+import { withRouter } from 'react-router-dom';
 import {Link} from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import Nav from "./nav";
 import List from "./list";
 import Member from "./member";
@@ -34,6 +36,7 @@ class App extends React.Component {
   constructor (props) {
     super(props);
     this.state = {
+      redirect: false,
       user: {
         login: false,
         name: "",
@@ -143,6 +146,7 @@ class App extends React.Component {
 
   addOnChangeName(e){
     this.setState({
+      redirect: false,
       additem: {
         ...this.state.additem,
         name: e.target.value,
@@ -247,25 +251,28 @@ class App extends React.Component {
               }
             });
           });
-        DB.collection("activity").where('member', 'array-contains-any', [this.state.user.email])
-          .get()
-          .then(function(querySnapshot) {
-              querySnapshot.forEach(function(doc) {
-                let data = {
-                  data: doc.data(),
-                  id: doc.id
-                }
-                userAct.push(data);
-              });
-          })
-          .catch(function(error) {
-              console.log("Error getting documents: ", error);
-          });
+        // DB.collection("activity").where('member', 'array-contains-any', [this.state.user.email])
+        //   .get()
+        //   .then(function(querySnapshot) {
+        //       querySnapshot.forEach(function(doc) {
+        //         let data = {
+        //           data: doc.data(),
+        //           id: doc.id
+        //         }
+        //         userAct.push(data);
+        //       });
+        //   })
+        //   .catch(function(error) {
+        //       console.log("Error getting documents: ", error);
+        //   });
 
           this.setState({
-            activity: userAct
-          });
-        window.location.href = "./#/chapter";
+            // activity: userAct,
+            redirect: true
+          })
+        // <Redirect to="./list" />
+        // window.location.href = "./#/chapter";
+        // this.props.history.push('/list')
       }
     } else {
       if (holder === "") {
@@ -293,24 +300,26 @@ class App extends React.Component {
               }
             });
           })
-        DB.collection("activity").where('member', 'array-contains-any', [this.state.user.email])
-          .get()
-          .then(function(querySnapshot) {
-              querySnapshot.forEach(function(doc) {
-                userAct.push(doc.data());
-                // doc.data() is never undefined for query doc snapshots
-                // console.log(doc.data());
-              });
-          })
-          .catch(function(error) {
-              console.log("Error getting documents: ", error);
-          });
+        // DB.collection("activity").where('member', 'array-contains-any', [this.state.user.email])
+        //   .get()
+        //   .then(function(querySnapshot) {
+        //       querySnapshot.forEach(function(doc) {
+        //         userAct.push(doc.data());
+        //         // doc.data() is never undefined for query doc snapshots
+        //         // console.log(doc.data());
+        //       });
+        //   })
+        //   .catch(function(error) {
+        //       console.log("Error getting documents: ", error);
+        //   });
 
           this.setState({
-            activity: userAct
+            // activity: userAct,
+            redirect: true
           })
       }
-      window.location.href = "./#/chapter";
+      // <Redirect to="./#/list" />
+      // window.location.href = "./#/chapter";
     }
   }
 
@@ -327,13 +336,12 @@ class App extends React.Component {
             <Nav />
           </div>
           <div className="main">
-            {this.state.redirect ? <Redirect push to="/activity"/> :
               <Switch>
                   <Route path="/list">
-                    <List user={this.state.user}/>
+                    {this.state.user.login ? <List user={this.state.user}/> : <Redirect to="/member" />}
                   </Route>
-                  <Route path="/activity">
-                    <Activity activity={this.state.activity}/>
+                  <Route path="/activity/:id">
+                    <Activity />
                   </Route>
                   <Route path="/member">
                     <Member user={this.state.user} sub={this.sub.bind(this)}/>
@@ -342,8 +350,8 @@ class App extends React.Component {
                     <AddOne additem={this.state.additem} addOnChangeName={this.addOnChangeName.bind(this)} addOnChangeKind={this.addOnChangeKind.bind(this)} addOneToTwo={this.addOneToTwo.bind(this)} />
                   </Route>
                   <Route path="/addOnce">
-                    <AddOnce additem={this.state.additem} addOnChangePlace={this.addOnChangePlace.bind(this)} addOnChangeDate={this.addOnChangeDate.bind(this)} addOnChangeHolder={this.addOnChangeHolder.bind(this)} addOnChangeValue={this.addOnChangeValue.bind(this)} addFinal={this.addFinal.bind(this)}
-                    />
+                    {this.state.redirect ? <Redirect to="/list" /> : <AddOnce redirect={this.state.redirect} additem={this.state.additem} addOnChangePlace={this.addOnChangePlace.bind(this)} addOnChangeDate={this.addOnChangeDate.bind(this)} addOnChangeHolder={this.addOnChangeHolder.bind(this)} addOnChangeValue={this.addOnChangeValue.bind(this)} addFinal={this.addFinal.bind(this)}
+                    />}
                   </Route>
                   <Route path="/addPeriod">
                     <AddPeriod additem={this.state.additem} addOnChangePlace={this.addOnChangePlace.bind(this)} addOnChangeDate={this.addOnChangeDate.bind(this)} addOnChangeHolder={this.addOnChangeHolder.bind(this)} addOnChangeValue={this.addOnChangeValue.bind(this)} addFinal={this.addFinal.bind(this)}
@@ -355,7 +363,6 @@ class App extends React.Component {
                   </div>
                 </Route>
               </Switch>
-            }
           </div>
         </div>
         </Router>

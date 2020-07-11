@@ -16,6 +16,7 @@ class List extends React.Component {
   constructor (props) {
     super(props);
     console.log(props)
+    // this.deletAct = this.deletAct.bind(this);
     this.state = {
       list: [],
       show: "all"
@@ -23,8 +24,7 @@ class List extends React.Component {
   }
   getActs(){
     let userAct = [];
-    const DB = firebase.firestore();
-    DB.collection("activity").where('member', 'array-contains-any', [this.props.user.email])
+    firebase.firestore().collection("activity").where('member', 'array-contains-any', [this.props.user.email])
       .get()
       .then((querySnapshot) => {
           querySnapshot.forEach(function(doc) {
@@ -42,11 +42,13 @@ class List extends React.Component {
           console.log("Error getting documents: ", error);
       });
   }
+
   componentDidMount(){
     this.getActs();
     // console.log(userAct);
     // console.log("componentDidUpdate");
   }
+
   componentDidUpdate(prevProps, prevState){
     if (prevProps.user.login !== this.props.user.login) {
       this.getActs();
@@ -59,6 +61,15 @@ class List extends React.Component {
     this.setState({
       show: i
     })
+  }
+
+  deleteAct(id){
+    console.log(id);
+    firebase.firestore().collection('activity')
+    .doc(id)
+    .delete()
+    .then(() => console.log('Document successfully deleted!'))
+    .then(()=> this.getActs())
   }
 
   render() {
@@ -80,7 +91,7 @@ class List extends React.Component {
     } else if (this.state.show === "done"){
       list = this.state.list.filter(item => item.data.done);
     }
-    let data = list.map(function(act, i){
+    let data = list.map((act, i)=>{
       return <div key={i} className="item">
           <img src={act.data.done ? done : undo} className="check" />
           <div className="listItemName">
@@ -88,7 +99,7 @@ class List extends React.Component {
               {act.data.name} / ({act.data.date})
             </Link>
           </div>
-          <img src={trash} className="trashImg" />
+          <img src={trash} className="trashImg" onClick={()=>{this.deleteAct(act.id)}} />
         </div>
       });
     return <>
@@ -102,13 +113,10 @@ class List extends React.Component {
           <div className="invite">使用連結 <img src={invite} className="inviteImg" /></div>
           <div className="list">{data}</div>
           <div className="btn">
-            <button onClick={()=> this.updateShow("all")}>全部</button>
-            <button onClick={()=> this.updateShow("undo")}>未完成</button>
-            <button onClick={()=> this.updateShow("done")}>已完成</button>
+            <button onClick={()=> this.updateShow("all")} id="allBtn">全部</button>
+            <button onClick={()=> this.updateShow("undo")} id="undoBtn">未完成</button>
+            <button onClick={()=> this.updateShow("done")} id="doneBtn">已完成</button>
           </div>
-        </div>
-        <div className="backToHome">
-          <Link to="/" style={mystyle}>&#10150; Back To Home</Link>
         </div>
       </>;
   }
