@@ -1,16 +1,15 @@
 {
-  "name": "React-toDoList",
+  "name": "SMTM",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "private": true,
-  "homepage": "https://gemmayou.github.io/SMTM/"
+  "homepage": "https://gemmayou.github.io/SMTM/",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
     "start": "webpack-dev-server",
     "predeploy": "npm run build",
-	  "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build"
   },
   "keywords": [],
   "author": "",

@@ -43,8 +43,6 @@ class App extends React.Component {
         email: "",
         id: ""
       },
-      activity: {
-      },
       additem: {
         name: "",
         kind: "once",
@@ -52,7 +50,9 @@ class App extends React.Component {
         date: "",
         holder: "",
         value: "",
-        done: false
+        done: false,
+        member_details: [],
+        member_email:[]
       }
     };
   }
@@ -71,24 +71,24 @@ class App extends React.Component {
             user: info
           }));
 
-          DB.collection("activity").where('member', 'array-contains-any', [this.state.user.email])
-            .get()
-            .then(function(querySnapshot) {
-                querySnapshot.forEach(function(doc) {
-                  let data = {
-                    data: doc.data(),
-                    id: doc.id
-                  }
-                  userAct.push(data);
-                });
-            })
-            .catch(function(error) {
-                console.log("Error getting documents: ", error);
-            });
-
-            this.setState({
-              activity: userAct
-            })
+          // DB.collection("activity").where('member', 'array-contains-any', [this.state.user.email])
+          //   .get()
+          //   .then(function(querySnapshot) {
+          //       querySnapshot.forEach(function(doc) {
+          //         let data = {
+          //           data: doc.data(),
+          //           id: doc.id
+          //         }
+          //         userAct.push(data);
+          //       });
+          //   })
+          //   .catch(function(error) {
+          //       console.log("Error getting documents: ", error);
+          //   });
+          //
+          //   this.setState({
+          //     activity: userAct
+          //   })
         }
       } else {
         // No user is signed in.
@@ -144,15 +144,32 @@ class App extends React.Component {
       });
   }
 
+  anonymous(){
+    let user = {
+      email: email.value,
+      name: document.getElementById("name").value,
+      anon: true
+    };
+    let info = {
+      name: user.name,
+      email: user.email,
+      login: false
+    };
+    this.setState({
+      user: info
+    })
+  }
+
   addOnChangeName(e){
     this.setState({
       redirect: false,
       additem: {
         ...this.state.additem,
         name: e.target.value,
-        member: [
+        member_email: [
           this.state.user.email
-        ]
+        ],
+        member_details: []
       }
     });
   };
@@ -333,7 +350,7 @@ class App extends React.Component {
         <div>
           <div className="title">
             <Link to="/" style={mystyle}><h1>SMTM</h1></Link>
-            <Nav />
+            <Nav user={this.state.user}/>
           </div>
           <div className="main">
               <Switch>
@@ -341,13 +358,13 @@ class App extends React.Component {
                     {this.state.user.login ? <List user={this.state.user}/> : <Redirect to="/member" />}
                   </Route>
                   <Route path="/activity/:id">
-                    <Activity />
+                    <Activity user={this.state.user} sub={this.sub.bind(this)} anonymous={this.anonymous.bind(this)}/>
                   </Route>
                   <Route path="/member">
                     <Member user={this.state.user} sub={this.sub.bind(this)}/>
                   </Route>
                   <Route path="/add">
-                    <AddOne additem={this.state.additem} addOnChangeName={this.addOnChangeName.bind(this)} addOnChangeKind={this.addOnChangeKind.bind(this)} addOneToTwo={this.addOneToTwo.bind(this)} />
+                    {this.state.user.login ? <AddOne additem={this.state.additem} addOnChangeName={this.addOnChangeName.bind(this)} addOnChangeKind={this.addOnChangeKind.bind(this)} addOneToTwo={this.addOneToTwo.bind(this)} /> : <Redirect to="/" />}
                   </Route>
                   <Route path="/addOnce">
                     {this.state.redirect ? <Redirect to="/list" /> : <AddOnce redirect={this.state.redirect} additem={this.state.additem} addOnChangePlace={this.addOnChangePlace.bind(this)} addOnChangeDate={this.addOnChangeDate.bind(this)} addOnChangeHolder={this.addOnChangeHolder.bind(this)} addOnChangeValue={this.addOnChangeValue.bind(this)} addFinal={this.addFinal.bind(this)}

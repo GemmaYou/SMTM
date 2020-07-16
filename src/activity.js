@@ -12,10 +12,12 @@ import date from "./img/date.png";
 import atm from "./img/ATM.png";
 import value from "./img/value.png";
 import user from "./img/user.png";
-import halfdone from "./img/halfdone.png";
 import doneCheck from "./img/donecheck.png";
 import Mobile from "./actMobile";
 import Desk from "./actDesk";
+import ActSignin from "./actSignin";
+//signinAccount 現在是display none不顯示 需調整
+import AddMember from "./addMember";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
@@ -35,7 +37,8 @@ class Activity extends React.Component {
   constructor (props) {
     super(props);
     this.getData = this.getData.bind(this);
-    this.addMember = this.addMember.bind(this)
+    this.addMember = this.addMember.bind(this);
+    this.changeActivityToDone = this.changeActivityToDone.bind(this);
     // console.log(location.query);
     this.state = {
       modal: false,
@@ -47,41 +50,72 @@ class Activity extends React.Component {
           name: "", email: ""
         },
         kind: "",
-        member: [],
+        member_details: [],
         name: "",
         place: "",
-        value: "",
+        value: ""
       }
     }
-    console.log(props);
+    // console.log(props);
   }
 
   componentDidMount() {
     window.addEventListener("resize", this.resize.bind(this));
     this.resize();
     const id = this.props.match.params.id;
-    console.log(id);
+    // console.log(id);
     this.getData(id);
   }
 
   getData(id){
-    console.log("getdata");
+    // console.log("getdata");
     firebase.firestore().collection("activity").doc(id)
-    .get()
-    .then(doc => {
-        if (doc.exists) {
-            console.log("Document data:", doc.data());
-            this.setState({
-              data: doc.data()
-            })
-        } else {
-            // doc.data() will be undefined in this case
-            alert("此活動不存在唷，可能已被刪除，請再次連結是否正確！");
-            console.log("No such document!");
-        }
-      }).catch(function(error) {
-        console.log("Error getting document:", error);
-      });
+    .onSnapshot(doc => {
+      if (doc.exists) {
+          // console.log("Document data:", doc.data());
+          this.setState({
+            data: doc.data()
+          })
+          let data = doc.data();
+          let user = this.props.user;
+          let result = data.member_email.indexOf(user.email);
+          if (result === -1){
+            console.log("新人");
+          } else if (result === 0) {
+            console.log("holder");
+            alert("ㄤㄤ主辦人");
+          } else {
+            let member = data.member_details.filter(detail => detail.email === user.email);
+            if (!member.done){
+              alert(user.name+"你欠的"+member[0].perValue+"快點還拉！");
+            }
+            console.log(member);
+          }
+          console.log(result);
+      } else {
+          // doc.data() will be undefined in this case
+          alert("此活動不存在唷，請再次確認連結是否正確！");
+          console.log("No such document!");
+          window.location.href = "./"; //需修正
+      }
+    });
+    // firebase.firestore().collection("activity").doc(id)
+    // .get()
+    // .then(doc => {
+    //     if (doc.exists) {
+    //         // console.log("Document data:", doc.data());
+    //         this.setState({
+    //           data: doc.data()
+    //         })
+    //     } else {
+    //         // doc.data() will be undefined in this case
+    //         alert("此活動不存在唷，請再次確認連結是否正確！");
+    //         console.log("No such document!");
+    //         window.location.href = "./"; //需修正
+    //     }
+    //   }).catch(function(error) {
+    //     console.log("Error getting document:", error);
+    //   });
   }
 
   resize() {
@@ -93,10 +127,47 @@ class Activity extends React.Component {
   }
 
   addMember(){
-    console.log("clickAdd");
+    // console.log("clickAdd");
     this.setState({
-      model: true
+      modal: !this.state.modal
     })
+    this.componentDidMount();
+  }
+
+  deleteMember (e) {
+    let docId = this.props.match.params.id;
+    let details = this.state.data.member_details;
+    let emails = this.state.data.member_email;
+     //deleteId is the id from the post you want to delete
+
+    firebase.firestore().collection("activity").doc(docId).update({
+       member_details: details.filter(detail => detail.email !== e),
+       member_email: emails.filter(email => email !== e)
+     })
+    .catch(function(error) {
+        console.error("Error removing document: ", error);
+    });
+    this.componentDidMount();
+  }
+
+  changeActivityToDone(){
+    let docId = this.props.match.params.id;
+    let data = this.state.data;
+    let emails = this.state.data.member_email;
+
+    if (this.props.user.email === data.holder.email){
+      // console.log("是舉辦人");
+       //deleteId is the id from the post you want to delete
+      firebase.firestore().collection("activity").doc(docId).update({
+         done: !data.done
+       })
+      .catch(function(error) {
+          console.error("Error removing document: ", error);
+      });
+      this.componentDidMount();
+    } else {
+      alert("只有舉辦人能改變活動狀態唷！")
+    }
   }
 
   render() {
@@ -107,10 +178,6 @@ class Activity extends React.Component {
     };
     return <>
       <div className="activityBox">
-        <div className="condition">
-          <img src={data.done ? doneCheck: nonCheck } className="activity-icon" />
-          {data.done ? <>已完成</> : <>未完成</> }
-        </div>
         <div className="search">
           <input placeholder="找什麼呢" />
           <img src={search} className="searchImg" />
@@ -118,40 +185,21 @@ class Activity extends React.Component {
         <div className="userName">
           {data.name}
         </div>
-        <div className="add" onClick={this.addMember}>
+        {this.state.data.done ? <></> : <div className="add" onClick={this.addMember}>
           新增用戶
           <img src={user} className="userImg" />
+        </div>}
+        <div className="condition" onClick={this.changeActivityToDone}>
+          <img src={data.done ? doneCheck: nonCheck } className="activity-icon" />
+          {data.done ? <>已完成</> : <>未完成</> }
         </div>
-        <div className="invite">
-          使用連結
-          <img src={invite} className="inviteImg" />
-        </div>
-        {this.state.window ? <Desk data={this.state.data}/> : <Mobile data={this.state.data}/>}
-
-        <Button variant="primary" onClick={handleShow}>
-        Launch static backdrop modal
-        </Button>
-
-        <Modal
-          show={show}
-          onHide={handleClose}
-          backdrop="static"
-          keyboard={false}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Modal title</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            I will not close if you click outside me. Don't even try to press
-            escape key.
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Close
-            </Button>
-            <Button variant="primary">Understood</Button>
-          </Modal.Footer>
-        </Modal>
+        {this.state.window ? <Desk data={this.state.data} user={this.props.user} deleteMember={this.deleteMember.bind(this)}/> : <Mobile data={this.state.data} user={this.props.user} deleteMember={this.deleteMember.bind(this)} />}
+        {this.state.modal ? <div id="myModal" className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={this.addMember}>&times;</span>
+              {this.props.user.email ? <AddMember user={this.props.user} id={this.props.match.params.id} data={this.state.data} addMember={this.addMember}/> : <ActSignin user={this.props.user} sub={this.props.sub} anonymous={this.props.anonymous}/>}
+          </div>
+        </div> : <></>}
       </div>
     </>;
   }

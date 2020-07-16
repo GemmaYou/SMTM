@@ -17,30 +17,32 @@ class List extends React.Component {
     super(props);
     console.log(props)
     // this.deletAct = this.deletAct.bind(this);
+    this.changeActivityToDone = this.changeActivityToDone.bind(this);
+    this.addThroughLink = this.addThroughLink.bind(this);
     this.state = {
       list: [],
-      show: "all"
+      show: "all",
+      modal: false
     }
   }
   getActs(){
-    let userAct = [];
-    firebase.firestore().collection("activity").where('member', 'array-contains-any', [this.props.user.email])
-      .get()
-      .then((querySnapshot) => {
-          querySnapshot.forEach(function(doc) {
-            let data = {
-              data: doc.data(),
-              id: doc.id
-            }
-            userAct.push(data);
-          });
-          this.setState({
-            list: userAct
-          });
+    firebase.firestore().collection("activity").where('member_email', 'array-contains-any', [this.props.user.email])
+      .onSnapshot(querySnapshot => {
+        let userAct = [];
+        querySnapshot.forEach(function(doc) {
+          let data = {
+            data: doc.data(),
+            id: doc.id
+          }
+          userAct.push(data);
+        });
+        this.setState({
+          list: userAct
+        });
       })
-      .catch(function(error) {
-          console.log("Error getting documents: ", error);
-      });
+      // .catch(function(error) {
+      //     console.log("Error getting documents: ", error);
+      // });
   }
 
   componentDidMount(){
@@ -72,6 +74,38 @@ class List extends React.Component {
     .then(()=> this.getActs())
   }
 
+  changeActivityToDone(id, i){
+    let list = [];
+    if(this.state.show === "all"){
+      list = this.state.list;
+    } else if(this.state.show === "undo"){
+      list = this.state.list.filter(item => !item.data.done);
+    } else if (this.state.show === "done"){
+      list = this.state.list.filter(item => item.data.done);
+    }
+    // console.log(this.state.list[i]);
+    let data = list[i].data;
+    if (this.props.user.email === data.holder.email){
+      // console.log("holder");
+       //deleteId is the id from the post you want to delete
+      firebase.firestore().collection("activity").doc(id).update({
+         done: !data.done
+       })
+      .catch(function(error) {
+          console.error("Error removing document: ", error);
+      });
+      // this.componentDidMount();
+    } else {
+      alert("只有舉辦人能改變活動狀態唷！")
+    }
+  }
+
+  addThroughLink(){
+    this.setState({
+      modal: !this.state.modal
+    })
+  }
+
   render() {
     let mystyle = {
       color: "#303030",
@@ -93,7 +127,7 @@ class List extends React.Component {
     }
     let data = list.map((act, i)=>{
       return <div key={i} className="item">
-          <img src={act.data.done ? done : undo} className="check" />
+          <img src={act.data.done ? done : undo} className="check" onClick={() =>this.changeActivityToDone(act.id, i)}/>
           <div className="listItemName">
             <Link to={"/activity/"+act.id} style={linkStyle}>
               {act.data.name} / ({act.data.date})
@@ -105,21 +139,31 @@ class List extends React.Component {
     return <>
         <div className="listBox">
           <div className="search">
-            <input placeholder="找什麼呢" />
+            <input placeholder="找活動" />
             <img src={search} className="searchImg" />
           </div>
-          <div className="userName">{this.props.user.name}</div>
+          <div className="userName">{this.props.user.name}的活動列表</div>
             <div className="add"><Link to="/add" style={linkStyle}>新增活動 <img src={add} className="addImg" /></Link></div>
-          <div className="invite">使用連結 <img src={invite} className="inviteImg" /></div>
+          <div className="invite" onClick={this.addThroughLink}>使用連結 <img src={invite} className="inviteImg" /></div>
           <div className="list">{data}</div>
           <div className="btn">
-            <button onClick={()=> this.updateShow("all")} id="allBtn">全部</button>
-            <button onClick={()=> this.updateShow("undo")} id="undoBtn">未完成</button>
-            <button onClick={()=> this.updateShow("done")} id="doneBtn">已完成</button>
+            <button onClick={()=> this.updateShow("all")} id="allBtn" className={this.state.show === "all" ? 'choosenList' : ""}>全部</button>
+            <button onClick={()=> this.updateShow("undo")} id="undoBtn" className={this.state.show === "undo" ? 'choosenList' : ""}>未完成</button>
+            <button onClick={()=> this.updateShow("done")} id="doneBtn" className={this.state.show === "done" ? 'choosenList' : ""}>已完成</button>
           </div>
         </div>
+        {this.state.modal ?
+          <div id="myModal" className="list-modal">
+            <div className="list-modal-content">
+              <span className="list-modal-close" onClick={this.addThroughLink}>
+                &times;
+              </span>
+            </div>
+          </div> : <></>}
       </>;
   }
 }
+
+
 
 export default List;

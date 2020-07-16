@@ -61,9 +61,6 @@ class AddOne extends React.Component {
           <button className="nextStep" onClick={()=> this.props.addOneToTwo()}>下一步</button>
         </div>
         <pre>{/*{JSON.stringify(this.state, null, 2)}*/}</pre>
-        <div className="backToHome">
-          <Link to="/" style={mystyle}>&#10150; Back To Home</Link>
-        </div>
       </>;
   }
 }
