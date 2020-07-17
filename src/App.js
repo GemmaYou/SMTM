@@ -217,15 +217,6 @@ class App extends React.Component {
     });
   };
 
-  addOnChangeHolder(e){
-    this.setState({
-      additem : {
-        ...this.state.additem,
-        holder: e.target.value
-      }
-    });
-  };
-
   addOnChangeValue(e){
     this.setState({
       additem : {
@@ -236,13 +227,16 @@ class App extends React.Component {
   };
 
   addFinal(){
+    let holder = this.state.holder;
     let userAct = this.state.activity;
     let kind = this.state.additem.kind;
     let place = this.state.additem.place;
     let date = this.state.additem.date;
     let value = this.state.additem.value;
     if (kind === "once"){
-      if (date === "") {
+      if (place === ""){
+        alert ("請填入地點！")
+      } else if (date === "") {
         alert ("請填入時間！")
       } else if (value === "") {
         alert ("請填入此次金額！")
@@ -287,12 +281,11 @@ class App extends React.Component {
             // activity: userAct,
             redirect: true
           })
-        // <Redirect to="./list" />
-        // window.location.href = "./#/chapter";
-        // this.props.history.push('/list')
       }
     } else {
-      if (holder === "") {
+      if (place === ""){
+        alert("請輸入事件描述")
+      } else if (holder === "") {
         alert ("請填入大金主是誰！")
       } else if (value === "") {
         alert ("請填入每次總額！")
@@ -331,12 +324,9 @@ class App extends React.Component {
         //   });
 
           this.setState({
-            // activity: userAct,
             redirect: true
           })
       }
-      // <Redirect to="./#/list" />
-      // window.location.href = "./#/chapter";
     }
   }
 
@@ -367,12 +357,12 @@ class App extends React.Component {
                     {this.state.user.login ? <AddOne additem={this.state.additem} addOnChangeName={this.addOnChangeName.bind(this)} addOnChangeKind={this.addOnChangeKind.bind(this)} addOneToTwo={this.addOneToTwo.bind(this)} /> : <Redirect to="/" />}
                   </Route>
                   <Route path="/addOnce">
-                    {this.state.redirect ? <Redirect to="/list" /> : <AddOnce redirect={this.state.redirect} additem={this.state.additem} addOnChangePlace={this.addOnChangePlace.bind(this)} addOnChangeDate={this.addOnChangeDate.bind(this)} addOnChangeHolder={this.addOnChangeHolder.bind(this)} addOnChangeValue={this.addOnChangeValue.bind(this)} addFinal={this.addFinal.bind(this)}
+                    {this.state.redirect ? <Redirect to="/list" /> : <AddOnce redirect={this.state.redirect} additem={this.state.additem} addOnChangePlace={this.addOnChangePlace.bind(this)} addOnChangeDate={this.addOnChangeDate.bind(this)}  addOnChangeValue={this.addOnChangeValue.bind(this)} addFinal={this.addFinal.bind(this)}
                     />}
                   </Route>
                   <Route path="/addPeriod">
-                    <AddPeriod additem={this.state.additem} addOnChangePlace={this.addOnChangePlace.bind(this)} addOnChangeDate={this.addOnChangeDate.bind(this)} addOnChangeHolder={this.addOnChangeHolder.bind(this)} addOnChangeValue={this.addOnChangeValue.bind(this)} addFinal={this.addFinal.bind(this)}
-                    />
+                    {this.state.redirect ? <Redirect to="/list" /> : <AddPeriod additem={this.state.additem} addOnChangePlace={this.addOnChangePlace.bind(this)} addOnChangeDate={this.addOnChangeDate.bind(this)} addOnChangeValue={this.addOnChangeValue.bind(this)} addFinal={this.addFinal.bind(this)}
+                    />}
                   </Route>
                 <Route path="/">
                   <div className="main">

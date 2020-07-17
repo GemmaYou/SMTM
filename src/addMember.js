@@ -77,7 +77,7 @@ class AddMember extends React.Component {
         name: document.getElementById("addMemberText").value,
         email: document.getElementById("addMemberEmail").value,
         perValue: e.target.value,
-        done: "notPaid"
+        done: false
       }
     });
   };

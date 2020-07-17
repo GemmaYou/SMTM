@@ -22,6 +22,9 @@ class Mobile extends React.Component {
   constructor (props) {
     super(props);
     // console.log(props);
+    this.state = {
+      show: true,
+    }
   }
 
   componentDidMount(){
@@ -32,13 +35,19 @@ class Mobile extends React.Component {
   }
 
   changeToList(){
-    document.getElementById("act-list").style.display = "block";
-    document.getElementById("act-member").style.display = "none";
+    // document.getElementById("act-list").style.display = "block";
+    // document.getElementById("act-member").style.display = "none";
+    this.setState({
+      show: true
+    });
   }
 
   changeToMember(){
-    document.getElementById("act-list").style.display = "none";
-    document.getElementById("act-member").style.display = "block";
+    // document.getElementById("act-list").style.display = "none";
+    // document.getElementById("act-member").style.display = "block";
+    this.setState({
+      show: false
+    });
   }
 
   // src(done){
@@ -61,48 +70,56 @@ class Mobile extends React.Component {
     console.log(data);
     let member = data.member_details.map((m, i)=>{
       return <div key={i} className="item">
-          <img src={m.done ? checkedPaid : notPaid} className="activity-icon" />
+          {/*<img src={m.done ? checkedPaid : notPaid} className="activity-icon" />*/}
           <div>{m.name} ： NT${m.perValue}</div>
           {data.done ? <></> : <img src={trash} className="trashImg" onClick={()=>this.props.deleteMember(`${m.email}`)}/>}
         </div>
       });
     return <>
-        <div className="act-list" id="act-list">
+        {this.state.show ? <div className="act-list" id="act-list">
           <div className="item">
             <div className="item-icon">
               <img src={location} className="activity-icon" />
               <div>舉辦地點</div>
             </div>
-            <div className="act-icon-intro">{data.place}</div>
+            <input type="text" className="act-icon-intro" defaultValue={data.place} onChange={this.props.changePlace}/>
           </div>
           <div className="item">
             <div className="item-icon">
               <img src={date} className="activity-icon" />
               <div>舉辦日期</div>
             </div>
-            <div className="act-icon-intro">{data.date}</div>
+            <input type="datetime-local" className="act-icon-intro" defaultValue={data.date} onChange={this.props.changeDate} />
           </div>
           <div className="item">
             <div className="item-icon">
               <img src={atm} className="activity-icon" />
               <div>舉辦人</div>
             </div>
-            <div className="act-icon-intro">{data.holder.name}</div>
+            <input type="text" className="act-icon-intro" defaultValue={data.holder.name} />
           </div>
           <div className="item">
             <div className="item-icon">
               <img src={value} className="activity-icon" />
               <div>活動總額</div>
             </div>
-            <div className="act-icon-intro">NT$ {data.value}</div>
+            <div className="NT act-icon-intro"><input type="number" className="last-input" defaultValue={data.value} onChange={this.props.changeValue} /></div>
+          </div>
+          <div className="condition" onClick={this.changeActivityToDone}>
+            {/*}<img src={data.done ? doneCheck: nonCheck } className="activity-icon" />*/}
+            <button>
+            {/*}{data.done ? <>已完成</> : <>未完成</> }*/}
+            完成確認
+            </button>
           </div>
         </div>
-        <div className="act-member" id="act-member">
+        : <div className="act-member" id="act-member">
           {member}
-        </div>
+        </div> }
         <div className="ac-btn">
-          <button onClick={()=> this.changeToList()}>活動內容</button>
-          <button onClick={()=> this.changeToMember()}>參與人員</button>
+        {/*className={this.state.show ? "" : "choosenList"}*/}
+          <button onClick={()=> this.changeToList()} className={this.state.show ? "choosenList" : ""}>活動內容</button>
+          <button onClick={()=> this.changeToMember()} className={this.state.show ? "" : "choosenList"}>參與人員</button>
         </div>
       </>;
   }

@@ -41,13 +41,11 @@ class AddPeriod extends React.Component {
           </div>
           <div className="item">
             <img src={datePNG} className="activity-icon" />
-            <input type="datetime-local" value={date} className="addActInfo" onChange={this.props.addOnChangeDate}
-             />
-          </div>
-          <div className="item">
-            <img src={atmPNG} className="activity-icon" />
-            <input type="text" value={holder} placeholder="誰是大金主" className="addActInfo" onChange={this.props.addOnChangeHolder}
-             />
+            <select onChange={this.props.addOnChangeDate}>
+              <option defaultValue="week">每週</option>
+              <option value="month">每月</option>
+              <option value="year">每年</option>
+            </select>
           </div>
           <div className="item">
             <img src={valuePNG} className="activity-icon" />

@@ -66,14 +66,26 @@ class Desk extends React.Component {
 
   render() {
     let data = this.props.data;
+    console.log(data.date.valueAsNumber);
     console.log(data);
     let member = data.member_details.map((m, i)=>{
       return <div key={i} className="item">
-          <img src={m.done ? checkedPaid : notPaid} className="activity-icon" />
-          <div>{m.name} ： NT${m.perValue}</div>
+          {/*<img src={m.done ? checkedPaid : notPaid} className="activity-icon" />*/}
+          <div>{m.name} 欠 NT${m.perValue}</div>
           {data.done ? <></> : <img src={trash} className="trashImg" onClick={()=>this.props.deleteMember(`${m.email}`)}/>}
         </div>
       });
+    let actDate = ()=>{
+      if (this.props.data.date === once){
+        return (<input type="datetime-local" className="act-icon-intro" defaultValue={this.props.data.date} onChange={this.props.changeDate}/>)
+      } else {
+        return (<select onChange={this.props.addOnChangeDate}>
+          <option value="week">每週</option>
+          <option value="month">每月</option>
+          <option value="year">每年</option>
+        </select>)
+      }
+    }
     return <>
         <div className="act-list" id="act-list">
           <div className="item">
@@ -81,30 +93,38 @@ class Desk extends React.Component {
               <img src={location} className="activity-icon" />
               <div>舉辦地點</div>
             </div>
-            <div className="act-icon-intro">{data.place}</div>
+            <input type="text" className="act-icon-intro" defaultValue={data.place} onChange={this.props.changePlace}/>
           </div>
           <div className="item">
             <div className="item-icon">
               <img src={date} className="activity-icon" />
               <div>舉辦日期</div>
             </div>
-            <div className="act-icon-intro">{data.date}</div>
+            {actDate}
           </div>
           <div className="item">
             <div className="item-icon">
               <img src={atm} className="activity-icon" />
               <div>舉辦人</div>
             </div>
-            <div className="act-icon-intro">{data.holder.name}</div>
+            <div className="act-icon-intro" >{data.holder.name} </div>
           </div>
           <div className="item">
             <div className="item-icon">
               <img src={value} className="activity-icon" />
               <div>活動總額</div>
             </div>
-            <div className="act-icon-intro">NT$ {data.value}</div>
+            <div className="NT act-icon-intro"><input type="number" className="last-input" defaultValue={data.value} onChange={this.props.changeValue}/></div>
+          </div>
+          <div className="condition" onClick={this.changeActivityToDone}>
+            {/*}<img src={data.done ? doneCheck: nonCheck } className="activity-icon" />*/}
+            <button>
+            {/*}{data.done ? <>已完成</> : <>未完成</> }*/}
+            完成確認
+            </button>
           </div>
         </div>
+        <div className="undo-member">仍有欠款</div>
         <div className="act-member" id="act-member">
           {member}
         </div>

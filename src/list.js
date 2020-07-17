@@ -21,7 +21,7 @@ class List extends React.Component {
     this.addThroughLink = this.addThroughLink.bind(this);
     this.state = {
       list: [],
-      show: "all",
+      show: false,
       modal: false
     }
   }
@@ -59,9 +59,9 @@ class List extends React.Component {
     }
   }
 
-  updateShow(i){
+  updateShow(){
     this.setState({
-      show: i
+      show: !this.state.show
     })
   }
 
@@ -76,11 +76,9 @@ class List extends React.Component {
 
   changeActivityToDone(id, i){
     let list = [];
-    if(this.state.show === "all"){
-      list = this.state.list;
-    } else if(this.state.show === "undo"){
+    if(!this.state.show){
       list = this.state.list.filter(item => !item.data.done);
-    } else if (this.state.show === "done"){
+    } else if (this.state.show ){
       list = this.state.list.filter(item => item.data.done);
     }
     // console.log(this.state.list[i]);
@@ -118,38 +116,43 @@ class List extends React.Component {
       display: "flex"
     };
     let list = [];
-    if(this.state.show === "all"){
-      list = this.state.list;
-    } else if(this.state.show === "undo"){
+    if(!this.state.show){
       list = this.state.list.filter(item => !item.data.done);
-    } else if (this.state.show === "done"){
+    } else if (this.state.show){
       list = this.state.list.filter(item => item.data.done);
     }
+    console.log(list);
     let data = list.map((act, i)=>{
       return <div key={i} className="item">
-          <img src={act.data.done ? done : undo} className="check" onClick={() =>this.changeActivityToDone(act.id, i)}/>
+          {/*<img src={act.data.done ? done : undo} className="check" onClick={() =>this.changeActivityToDone(act.id, i)}/>*/}
           <div className="listItemName">
             <Link to={"/activity/"+act.id} style={linkStyle}>
-              {act.data.name} / ({act.data.date})
+              {act.data.name}
             </Link>
           </div>
-          <img src={trash} className="trashImg" onClick={()=>{this.deleteAct(act.id)}} />
+          {/*<img src={trash} className="trashImg" onClick={()=>{this.deleteAct(act.id)}} />*/}
         </div>
       });
     return <>
         <div className="listBox">
-          <div className="search">
+          {/*<div className="search">
             <input placeholder="找活動" />
             <img src={search} className="searchImg" />
-          </div>
-          <div className="userName">{this.props.user.name}的活動列表</div>
-            <div className="add"><Link to="/add" style={linkStyle}>新增活動 <img src={add} className="addImg" /></Link></div>
-          <div className="invite" onClick={this.addThroughLink}>使用連結 <img src={invite} className="inviteImg" /></div>
+          </div>*/}
+          <div className="userName">我的活動</div>
+            <div className="add">
+              <Link to="/add" style={linkStyle}>
+                {/*新增活動
+                 <img src={add} className="addImg" />*/}
+                 <button>Add +</button>
+              </Link>
+            </div>
+          {/*<div className="invite" onClick={this.addThroughLink}>使用連結 <img src={invite} className="inviteImg" /></div>*/}
           <div className="list">{data}</div>
           <div className="btn">
-            <button onClick={()=> this.updateShow("all")} id="allBtn" className={this.state.show === "all" ? 'choosenList' : ""}>全部</button>
-            <button onClick={()=> this.updateShow("undo")} id="undoBtn" className={this.state.show === "undo" ? 'choosenList' : ""}>未完成</button>
-            <button onClick={()=> this.updateShow("done")} id="doneBtn" className={this.state.show === "done" ? 'choosenList' : ""}>已完成</button>
+            {/*<button onClick={()=> this.updateShow("all")} id="allBtn" className={this.state.show === "all" ? 'choosenList' : ""}>全部</button>*/}
+            <button onClick={()=> this.updateShow("undo")} id="undoBtn" className={this.state.show ? "" : "choosenList"}>未完成</button>
+            <button onClick={()=> this.updateShow("done")} id="doneBtn" className={this.state.show ? 'choosenList' : ""}>已完成</button>
           </div>
         </div>
         {this.state.modal ?

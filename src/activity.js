@@ -13,6 +13,7 @@ import atm from "./img/ATM.png";
 import value from "./img/value.png";
 import user from "./img/user.png";
 import doneCheck from "./img/donecheck.png";
+import completed from "./img/completed.png";
 import Mobile from "./actMobile";
 import Desk from "./actDesk";
 import ActSignin from "./actSignin";
@@ -38,11 +39,14 @@ class Activity extends React.Component {
     super(props);
     this.getData = this.getData.bind(this);
     this.addMember = this.addMember.bind(this);
+    this.firstTimeAlert = this.firstTimeAlert.bind(this);
     this.changeActivityToDone = this.changeActivityToDone.bind(this);
+    this.getAlert = this.getAlert.bind(this);
     // console.log(location.query);
     this.state = {
       modal: false,
       window: false,
+      firstTime: true,
       data: {
         date: "",
         done: "",
@@ -76,22 +80,26 @@ class Activity extends React.Component {
           this.setState({
             data: doc.data()
           })
-          let data = doc.data();
-          let user = this.props.user;
-          let result = data.member_email.indexOf(user.email);
-          if (result === -1){
-            console.log("新人");
-          } else if (result === 0) {
-            console.log("holder");
-            alert("ㄤㄤ主辦人");
-          } else {
-            let member = data.member_details.filter(detail => detail.email === user.email);
-            if (!member.done){
-              alert(user.name+"你欠的"+member[0].perValue+"快點還拉！");
-            }
-            console.log(member);
-          }
-          console.log(result);
+          // if (this.state.firstTime){ //僅有初次進頁面顯示
+          //   let data = doc.data();
+          //   let user = this.props.user;
+          //   let result = data.member_email.indexOf(user.email);
+          //
+          //   if (result === -1){
+          //     console.log("新人");
+          //   } else if (result === 0) {
+          //     console.log("holder");
+          //     alert("ㄤㄤ主辦人");
+          //   } else {
+          //     let member = data.member_details.filter(detail => detail.email === user.email);
+          //     if (!member.done){
+          //       alert(user.name+"你欠的"+member[0].perValue+"快點還拉！");
+          //     }
+          //     console.log(member);
+          //   }
+          //
+          //   // console.log(result);
+          // }
       } else {
           // doc.data() will be undefined in this case
           alert("此活動不存在唷，請再次確認連結是否正確！");
@@ -99,23 +107,6 @@ class Activity extends React.Component {
           window.location.href = "./"; //需修正
       }
     });
-    // firebase.firestore().collection("activity").doc(id)
-    // .get()
-    // .then(doc => {
-    //     if (doc.exists) {
-    //         // console.log("Document data:", doc.data());
-    //         this.setState({
-    //           data: doc.data()
-    //         })
-    //     } else {
-    //         // doc.data() will be undefined in this case
-    //         alert("此活動不存在唷，請再次確認連結是否正確！");
-    //         console.log("No such document!");
-    //         window.location.href = "./"; //需修正
-    //     }
-    //   }).catch(function(error) {
-    //     console.log("Error getting document:", error);
-    //   });
   }
 
   resize() {
@@ -131,7 +122,7 @@ class Activity extends React.Component {
     this.setState({
       modal: !this.state.modal
     })
-    this.componentDidMount();
+    // this.componentDidMount();
   }
 
   deleteMember (e) {
@@ -147,7 +138,7 @@ class Activity extends React.Component {
     .catch(function(error) {
         console.error("Error removing document: ", error);
     });
-    this.componentDidMount();
+    // this.componentDidMount();
   }
 
   changeActivityToDone(){
@@ -164,42 +155,173 @@ class Activity extends React.Component {
       .catch(function(error) {
           console.error("Error removing document: ", error);
       });
-      this.componentDidMount();
+      // this.componentDidMount();
     } else {
       alert("只有舉辦人能改變活動狀態唷！")
     }
   }
 
+  firstTimeAlert(){
+    this.setState({
+      firstTime: false
+    });
+  }
+
+  getAlert(){
+    let data = this.state.data;
+    if (!data.done){
+      if (data.name !== ""){
+        if (this.state.firstTime){ //僅有初次進頁面顯示
+          let user = this.props.user;
+          let result = data.member_email.indexOf(user.email);
+
+          if (result === -1){
+            return (
+              <div id="myModal" className="modal">
+                <div className="modal-content">
+                  <span className="close" onClick={this.firstTimeAlert}>&times;</span>
+                  <div>新人ㄤㄤ 歡迎加入活動，未來有欠錢記得還（？</div>
+                </div>
+              </div>);
+          } else if (result === 0) {
+            let member = this.state.data.member_details.filter(detail => detail.done === false);
+
+            let data = member.map((m, i)=>{
+              return <div key={i}>
+                      {m.name} / {m.perValue}
+                  </div>
+              });
+
+            return (<div id="myModal" className="modal">
+              <div className="modal-content">
+                <span className="close" onClick={this.firstTimeAlert}>&times;</span>
+                <div>ㄤㄤ主辦人，這些人欠錢不還</div><div>{data}</div>
+              </div>
+            </div>);
+          } else {
+            let member = data.member_details.filter(detail => detail.email === user.email);
+            if (!member.done){
+              // alert(user.name+"你欠的"+member[0].perValue+"快點還拉！");
+              return (
+                <div id="myModal" className="modal">
+                  <div className="modal-content">
+                    <span className="close" onClick={this.firstTimeAlert}>&times;</span>
+                    <div>{user.name}你欠的{member[0].perValue}快點還拉！</div>
+                  </div>
+                </div>
+              )
+            }
+          }
+          // console.log(result);
+        }
+      }
+    }
+  }
+
+  changeName(e){
+    if (this.props.user.login){
+      let docId = this.props.match.params.id;
+      firebase.firestore().collection("activity").doc(docId).update({
+         name: e.target.value
+       })
+      .catch(function(error) {
+          console.error("Error removing document: ", error);
+      });
+    } else {
+      alert("會員才能修改活動唷！");
+      window.location.href = "./#/member";
+    }
+  }
+
+  changePlace(e){
+    if (this.props.user.login){
+      let docId = this.props.match.params.id;
+      firebase.firestore().collection("activity").doc(docId).update({
+         place: e.target.value
+       })
+      .catch(function(error) {
+          console.error("Error removing document: ", error);
+      });
+    } else {
+      alert("會員才能修改活動唷！");
+      window.location.href = "./#/member";
+    }
+  }
+
+  changeDate(e){
+    if (this.props.user.login){
+      let docId = this.props.match.params.id;
+      firebase.firestore().collection("activity").doc(docId).update({
+         date: e.target.value
+       })
+      .catch(function(error) {
+          console.error("Error removing document: ", error);
+      });
+    } else {
+      alert("會員才能修改活動唷！");
+      window.location.href = "./#/member";
+    }
+  }
+
+  changeValue(e){
+    if (this.props.user.login){
+      let docId = this.props.match.params.id;
+      firebase.firestore().collection("activity").doc(docId).update({
+         value: e.target.value
+       })
+      .catch(function(error) {
+          console.error("Error removing document: ", error);
+      });
+    } else {
+      alert("會員才能修改活動唷！");
+      window.location.href = "./#/member";
+    }
+  }
+
+  // change(word, event){
+  //   let docId = this.props.match.params.id;
+  //   console.log(word)
+  //   firebase.firestore().collection("activity").doc(docId).update({
+  //      word: event.target.value
+  //    })
+  //   .catch(function(error) {
+  //       console.error("Error removing document: ", error);
+  //   });
+  // }
+
   render() {
+    console.log(this.state.firstTime);
     let data = this.state.data;
     let mystyle = {
       color: "#303030",
       textDecoration: "none"
     };
     return <>
+
       <div className="activityBox">
-        <div className="search">
-          <input placeholder="找什麼呢" />
-          <img src={search} className="searchImg" />
-        </div>
-        <div className="userName">
-          {data.name}
-        </div>
-        {this.state.data.done ? <></> : <div className="add" onClick={this.addMember}>
+        <input className="userName" defaultValue={data.name} onChange={this.changeName.bind(this)}/>
+        {/*{this.state.data.done ? <></> : <div className="add" onClick={this.addMember}>
           新增用戶
           <img src={user} className="userImg" />
-        </div>}
-        <div className="condition" onClick={this.changeActivityToDone}>
+        </div>}*/}
+        {this.state.data.done ? <></> : <div className="add"><button onClick={this.addMember} >Add +</button></div>}
+        {/*<div className="condition" onClick={this.changeActivityToDone}>
           <img src={data.done ? doneCheck: nonCheck } className="activity-icon" />
           {data.done ? <>已完成</> : <>未完成</> }
-        </div>
-        {this.state.window ? <Desk data={this.state.data} user={this.props.user} deleteMember={this.deleteMember.bind(this)}/> : <Mobile data={this.state.data} user={this.props.user} deleteMember={this.deleteMember.bind(this)} />}
+        </div>*/}
+        {this.state.window ? <Desk data={this.state.data} user={this.props.user} deleteMember={this.deleteMember.bind(this)} changePlace={this.changePlace.bind(this)}
+        changeDate={this.changeDate.bind(this)}
+        changeValue={this.changeValue.bind(this)}/> : <Mobile data={this.state.data} user={this.props.user} deleteMember={this.deleteMember.bind(this)} changePlace={this.changePlace.bind(this)}
+        changeDate={this.changeDate.bind(this)}
+        changeValue={this.changeValue.bind(this)} />}
         {this.state.modal ? <div id="myModal" className="modal">
           <div className="modal-content">
             <span className="close" onClick={this.addMember}>&times;</span>
               {this.props.user.email ? <AddMember user={this.props.user} id={this.props.match.params.id} data={this.state.data} addMember={this.addMember}/> : <ActSignin user={this.props.user} sub={this.props.sub} anonymous={this.props.anonymous}/>}
           </div>
         </div> : <></>}
+            {this.getAlert()}
+        {this.state.data.done ? <div className="cover"><img src={completed}/></div> : <></>}
       </div>
     </>;
   }
