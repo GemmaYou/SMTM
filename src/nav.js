@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import {Link} from "react-router-dom";
 import PropTypes from 'prop-types';
 import login from './img/people.png';
+import logedin from './img/logedin.png';
 import FacebookLogin from 'react-facebook-login';
 import listIcon from "./img/listIcon.png";
 
@@ -22,12 +23,12 @@ class Nav extends React.Component {
     return <nav>
         <ul className="titleList">
             {this.props.user.login ? <Link to="/list" style={mystyle}>
-              <img src={listIcon} className="listIcon" id="listIcon" />
-              <div className="navLoginCondition">我的活動</div>
+              {/*<img src={listIcon} className="listIcon" id="listIcon" />*/}
+              <div className={`navLoginCondition ${this.props.user.login ? "navLogedin" : ""}`} >我的活動</div>
             </Link> : <></>}
             <Link to="/member" style={mystyle}>
-              <img src={login} alt="login" className="login" id="login" />
-              <div className="navLoginCondition">{this.props.user.login ? <>會員中心</> : <>註冊/登入</>}</div>
+              {/*<img src={this.props.user ? logedin : login} alt="login" className="login" id="login" />*/}
+              <div className={`navLoginCondition ${this.props.user.login ? "navLogedin" : ""}`} >{this.props.user.login ? <>會員中心</> : <>註冊/登入</>}</div>
             </Link>
         </ul>
       </nav>;

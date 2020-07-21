@@ -130,7 +130,7 @@ class List extends React.Component {
               {act.data.name}
             </Link>
           </div>
-          {/*<img src={trash} className="trashImg" onClick={()=>{this.deleteAct(act.id)}} />*/}
+          <img src={trash} className="trashImg" onClick={()=>{this.deleteAct(act.id)}} />
         </div>
       });
     return <>

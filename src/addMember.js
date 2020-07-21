@@ -87,10 +87,6 @@ class AddMember extends React.Component {
     let oldMemberEmail = this.state.exist_memberEmails;
     let dataDatail = this.state.newMember;
     let dataEmail = this.state.newMember.email;
-    // console.log(dataDatail);
-    // console.log(oldMemberDetails);
-    // oldMemberDetails.push(dataDatail);
-    // oldMemberEmail.push(dataEmail);
     if (this.state.newMember.perValue === ""){
       alert("請輸入欠債金額！");
     } else if(this.state.newMember.name === ""){

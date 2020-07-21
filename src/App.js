@@ -5,6 +5,8 @@ import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import { withRouter } from 'react-router-dom';
 import {Link} from "react-router-dom";
 import { Redirect } from "react-router-dom";
+import cashBack from "./img/cashBack.jpg";
+import home from "./img/home.jpg";
 import Nav from "./nav";
 import List from "./list";
 import Member from "./member";
@@ -14,8 +16,7 @@ import Signin from "./signin";
 import AddOne from "./add";
 import AddOnce from "./addOnce";
 import AddPeriod from "./addPeriod";
-import login from './img/people.png';
-import logedin from './img/logedin.png';
+import ActSignin from "./actSignin";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
@@ -35,6 +36,10 @@ const DB = firebase.firestore();
 class App extends React.Component {
   constructor (props) {
     super(props);
+    this.sub = this.sub.bind(this);
+    this.anonymous = this.anonymous.bind(this);
+    this.clickHomepageSignin = this.clickHomepageSignin.bind(this);
+    this.closeHomepageSignin = this.closeHomepageSignin.bind(this);
     this.state = {
       redirect: false,
       user: {
@@ -53,7 +58,8 @@ class App extends React.Component {
         done: false,
         member_details: [],
         member_email:[]
-      }
+      },
+      modal: false
     };
   }
 
@@ -63,7 +69,6 @@ class App extends React.Component {
       if (user) {
         // console.log(user);
         // console.log(user.displayName);
-        document.getElementById("login").src= logedin;
         if (user.displayName !== null){ //submit沒有displayName
           // console.log("have displayname")
           let info = {name: user.displayName, email: user.email, id: user.uid, login: true};
@@ -92,7 +97,6 @@ class App extends React.Component {
         }
       } else {
         // No user is signed in.
-        document.getElementById("login").src= login;
         let info = {name: "", email: "", id: "", login: false};
         this.setState({
           user: info,
@@ -129,7 +133,7 @@ class App extends React.Component {
             name: user.name
           })
           .then(() => { // 儲存成功後顯示訊息
-            console.log("完成註冊");
+            alert("完成註冊");
           });
         let info = {name: user.name, email: user.email, id: result.user.uid, login: true};
         this.setState({
@@ -173,6 +177,7 @@ class App extends React.Component {
       }
     });
   };
+
   addOnChangeKind(e){
     this.setState({
       additem : {
@@ -181,6 +186,7 @@ class App extends React.Component {
       }
     });
   };
+
   addOneToTwo(){
     let name = this.state.additem.name;
     let kind = this.state.additem.kind;
@@ -189,9 +195,11 @@ class App extends React.Component {
     } else if (kind === "") {
       alert ("請選擇活動類型！")
     } else if (kind === "once") {
-      window.location.href = "./#/addOnce";
+      this.props.history.push("/addOnce");
+      // window.location.href = "./#/addOnce";
     } else {
-      window.location.href = "./#/addPeriod";
+      this.props.history.push("/addPeriod");
+      // window.location.href = "./#/addPeriod";
     }
   }
 
@@ -330,6 +338,23 @@ class App extends React.Component {
     }
   }
 
+  clickHomepageSignin(){
+    if(this.state.user.login){
+      // window.location.href = "./#/list"
+      this.props.history.push("/list");
+    } else {
+      this.setState({
+        modal: !this.state.modal
+      })
+    }
+  }
+
+  closeHomepageSignin(){
+    this.setState({
+      modal: !this.state.modal
+    })
+  }
+
   render() {
     console.log(this.state);
     let mystyle = {
@@ -339,7 +364,9 @@ class App extends React.Component {
       return (<Router>
         <div>
           <div className="title">
-            <Link to="/" style={mystyle}><h1>SMTM</h1></Link>
+            <Link to="/" style={mystyle}>
+              <img src={cashBack} />
+              <h2>CashBack</h2></Link>
             <Nav user={this.state.user}/>
           </div>
           <div className="main">
@@ -348,10 +375,10 @@ class App extends React.Component {
                     {this.state.user.login ? <List user={this.state.user}/> : <Redirect to="/member" />}
                   </Route>
                   <Route path="/activity/:id">
-                    <Activity user={this.state.user} sub={this.sub.bind(this)} anonymous={this.anonymous.bind(this)}/>
+                    <Activity user={this.state.user} sub={this.sub} anonymous={this.anonymous}/>
                   </Route>
                   <Route path="/member">
-                    <Member user={this.state.user} sub={this.sub.bind(this)}/>
+                    <Member user={this.state.user} sub={this.sub}/>
                   </Route>
                   <Route path="/add">
                     {this.state.user.login ? <AddOne additem={this.state.additem} addOnChangeName={this.addOnChangeName.bind(this)} addOnChangeKind={this.addOnChangeKind.bind(this)} addOneToTwo={this.addOneToTwo.bind(this)} /> : <Redirect to="/" />}
@@ -365,8 +392,30 @@ class App extends React.Component {
                     />}
                   </Route>
                 <Route path="/">
-                  <div className="main">
-                    <h2>Home Page</h2>
+                  <div className="homePage">
+                    <div className="homePageIntro">
+                      <div className="words">
+                        <h1>還在煩惱朋友忘記還錢嗎？</h1>
+                        <p>討錢總是傷感情，趕快來試試 CashBack！<br/>
+                        系統寄信提醒還錢，不再煩惱如何開口！<br/>
+                        不論是 Netflix 家庭方案主揪，還是聚餐墊錢都不怕！</p>
+                      </div>
+                      <div className="buttons">
+                        <Link to="/list" style={mystyle}>
+                          <button className="toList">建立活動</button>
+                        </Link>
+                        <button className="toSignin" onClick={this.clickHomepageSignin.bind(this)}>註冊帳戶</button>
+                      </div>
+                      <img src={home} />
+                    </div>
+                    {this.state.modal ? <div id="myModal" className="modal">
+                      <div className="modal-content">
+                        <span className="close" onClick={this.closeHomepageSignin}>
+                          <div>&times;</div>
+                        </span>
+                          <ActSignin user={this.state.user} sub={this.sub} anonymous={this.anonymous}/>
+                      </div>
+                    </div> : <></>}
                   </div>
                 </Route>
               </Switch>
@@ -377,4 +426,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default withRouter(App);

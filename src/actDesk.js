@@ -2,8 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 import {Link} from "react-router-dom";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import add from "./img/add.png";
-import invite from "./img/invite.png";
 import nonCheck from "./img/nonCheck.png";
 import search from "./img/search.png";
 import location from "./img/location.png";
@@ -13,79 +11,187 @@ import value from "./img/value.png";
 import user from "./img/user.png";
 import doneCheck from "./img/donecheck.png";
 import trash from "./img/trash.png";
-import notPaid from "./img/notPaid.png";
-import paid from "./img/paid.png";
-import checkedPaid from "./img/checkedPaid.png";
+import * as firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/firestore";
 
 class Desk extends React.Component {
   constructor (props) {
     super(props);
     this.changeMemberCheck = this.changeMemberCheck.bind(this);
-    // console.log(props);
+    this.changeToUndo = this.changeToUndo.bind(this);
+    this.changeToDone = this.changeToDone.bind(this);
+    this.showDate = this.showDate.bind(this);
+    // this.doneButton = this.doneButton.bind(this);
+    this.member = this.member.bind(this);
+    this.state ={
+      showMember: false,
+    }
   }
 
-  changeMemberCheck(i){
-    console.log("click member check");
-    console.log(i);
+  member(){
+    console.log("member");
+    let list = [];
+    if(!this.state.showMember){
+      list = this.props.data.member_details.filter(item => !item.done);
+    } else if (this.state.showMember){
+      list = this.props.data.member_details.filter(item => item.done);
+    }
+    return (list.map((m, i)=>{
+      let img = ()=>{
+        if (m.email === this.props.user.email){
+          return (<img src={m.done ? doneCheck : nonCheck} className="activity-icon" onClick={()=>this.changeMemberCheck(`${m.email}`)}/>)
+        } else if (this.props.data.holder.email === this.props.user.email){
+          return (<img src={m.done ? doneCheck : nonCheck} className="activity-icon" onClick={()=>this.changeMemberCheck(`${m.email}`)}/>)
+        } else {
+          return (<div></div>)
+        }
+      }
+      let trashImg = ()=>{
+        if (this.props.data.holder.email === this.props.user.email){
+          return (<img src={trash} className="trashImg" onClick={()=>this.props.deleteMember(`${m.email}`)}/>)
+        } else {
+          return (<div></div>)
+        }
+      }
+      // console.log(img());
+      return (<div key={i} id={m.email} className="item">
+          {img()}
+          <div>{m.name} 欠 NT${m.perValue}</div>
+          {this.props.data.done ? <></> : trashImg()}
+        </div>)
+      }))
+  }
 
-    let data = this.props.data.member_details[i];
-    console.log(list);
+  showDate(){
+    if (this.props.data.kind === "once"){
+      return (<input type="datetime-local" className="act-icon-intro" defaultValue={this.props.data.date} onChange={this.props.changeDate}/>)
+    } else {
+      return (<select value={this.props.data.date} onChange={this.props.changeDate}>
+        <option value="week">每週</option>
+        <option value="month">每月</option>
+        <option value="year">每年</option>
+      </select>)
+    }
+  }
 
-    if (this.props.user.email === data.email){
-      // console.log("holder");
-       //deleteId is the id from the post you want to delete
-      // firebase.firestore().collection("activity").doc(id).where('member_details', 'array-contains-any', [this.props.user.email])
-      // .update({
-      //    member_details: {
-      //      done: !data.done,
-      //    }
-      //  })
-      // .catch(function(error) {
-      //     console.error("Error removing document: ", error);
-      // });
-      // this.componentDidMount();
+  changeToUndo(){
+    this.setState({
+      showMember: false
+    })
+  }
+
+  changeToDone(){
+    this.setState({
+      showMember: true
+    })
+  }
+
+  changeMemberCheck(e){
+    // console.log(e);
+    let list = [];
+    if(!this.state.showMember){
+      list = this.props.data.member_details.filter(item => !item.done);
+    } else if (this.state.showMember){
+      list = this.props.data.member_details.filter(item => item.done);
+    }
+
+    // console.log("click member check");
+    let id = this.props.id;
+    let user = this.props.user;
+    let data = this.props.data;
+    let member = this.props.data.member_email;
+    let details = this.props.data.member_details;
+    let i = member.indexOf(e)-1;
+
+    if (user.email === e || user.email === data.holder.email){
+      details[i].done = !details[i].done;
+      // console.log(details);
+
+      firebase.firestore().collection("activity").doc(id).update({
+        member_details: details
+       })
+      .catch(function(error) {
+          console.error("Error removing document: ", error);
+      });
     } else {
       alert("只有本人或舉辦人能改變各自的活動狀態唷！")
     }
   }
 
-  src(done, i){
-    switch(done){
-      case "notPaid":
-        return <img src={notPaid}  className="activity-icon" onClick={()=>this.changeMemberCheck(i)} key={i} />;
-        break;
-      case "paid":
-        return <img src={paid} className="activity-icon" onClick={()=>this.changeMemberCheck(i)} key={i} />;
-        break;
-      case "checkedPaid":
-        return <img src={checkedPaid} className="activity-icon" onClick={()=>this.changeMemberCheck(i)} key={i} />;
-        break;
-      default:return null;
-    }
+  deleteMember (e) {
+    let docId = this.props.match.params.id;
+    let details = this.state.data.member_details;
+    let emails = this.state.data.member_email;
+     //deleteId is the id from the post you want to delete
+
+    firebase.firestore().collection("activity").doc(docId).update({
+       member_details: details.filter(detail => detail.email !== e),
+       member_email: emails.filter(email => email !== e)
+     })
+    .catch(function(error) {
+        console.error("Error removing document: ", error);
+    });
+    // this.componentDidMount();
   }
+
+  // member(){
+  //   let details = this.props.data.member_details;
+  //   if(!this.state.showMember){
+  //     list = this.props.data.member_details.filter(item => !item.done);
+  //   } else if (this.state.showMember){
+  //     list = this.props.data.member_details.filter(item => item.done);
+  //   }
+  //   if (details.length === 0){
+  //     console.log("no member details");
+  //   } else {
+  //     let member = list.map((m, i)=>{
+  //       return <div key={i} id={m.email} className="item">
+  //           <img src={m.done ? doneCheck : nonCheck} className="activity-icon" onClick={()=>this.changeMemberCheck(`${m.email}`)}/>
+  //           <div>{m.name} 欠 NT${m.perValue}</div>
+  //           {data.done ? <></> : <img src={trash} className="trashImg" onClick={()=>this.props.deleteMember(`${m.email}`)}/>}
+  //         </div>
+  //       });
+  //   }
+  // }
+
+  // doneButton(){
+  //   // return <></>
+  //   // console.log(this.props);
+  //   // if (this.props.data.exists){
+  //   //   console.log("doneButton exists");
+  //     if(this.props.user.email = this.props.data.holder.email){
+  //       return (<button onClick={this.props.changeActivityToDone}>
+  //         {this.props.data.done ? <>取消完成</> : <>完成確認</> }
+  //       </button>);
+  //     } else {
+  //       // console.log("doneButton exists");
+  //       return <></>
+  //     }
+  //   // }
+  // }
 
   render() {
     let data = this.props.data;
-    console.log(data.date.valueAsNumber);
-    console.log(data);
-    let member = data.member_details.map((m, i)=>{
-      return <div key={i} className="item">
-          {/*<img src={m.done ? checkedPaid : notPaid} className="activity-icon" />*/}
-          <div>{m.name} 欠 NT${m.perValue}</div>
-          {data.done ? <></> : <img src={trash} className="trashImg" onClick={()=>this.props.deleteMember(`${m.email}`)}/>}
-        </div>
-      });
-    let actDate = ()=>{
-      if (this.props.data.date === once){
-        return (<input type="datetime-local" className="act-icon-intro" defaultValue={this.props.data.date} onChange={this.props.changeDate}/>)
-      } else {
-        return (<select onChange={this.props.addOnChangeDate}>
-          <option value="week">每週</option>
-          <option value="month">每月</option>
-          <option value="year">每年</option>
-        </select>)
-      }
+    // console.log(this.props);
+    let list = [];
+    if(!this.state.showMember){
+      list = this.props.data.member_details.filter(item => !item.done);
+    } else if (this.state.showMember){
+      list = this.props.data.member_details.filter(item => item.done);
     }
+    // let member = list.map((m, i)=>{
+    //   return <div key={i} id={m.email} className="item">
+    //       <img src={m.done ? doneCheck : nonCheck} className="activity-icon" onClick={()=>this.changeMemberCheck(`${m.email}`)}/>
+    //       <div>{m.name} 欠 NT${m.perValue}</div>
+    //       {data.done ? <></> : <img src={trash} className="trashImg" onClick={()=>this.props.deleteMember(`${m.email}`)}/>}
+    //     </div>
+    //   });
+
+    let actDate = this.showDate();
+    let member = this.member();
+    // let doneButton = this.doneButton();
+
     return <>
         <div className="act-list" id="act-list">
           <div className="item">
@@ -116,17 +222,23 @@ class Desk extends React.Component {
             </div>
             <div className="NT act-icon-intro"><input type="number" className="last-input" defaultValue={data.value} onChange={this.props.changeValue}/></div>
           </div>
-          <div className="condition" onClick={this.changeActivityToDone}>
-            {/*}<img src={data.done ? doneCheck: nonCheck } className="activity-icon" />*/}
-            <button>
-            {/*}{data.done ? <>已完成</> : <>未完成</> }*/}
-            完成確認
-            </button>
-          </div>
         </div>
-        <div className="undo-member">仍有欠款</div>
+        <div className="condition">
+          <button onClick={this.props.changeActivityToDone}>
+            {this.props.data.done ? <>取消完成</> : <>完成確認</> }
+          </button>
+          {/*{doneButton}*/}
+        </div>
+        <div className="undo-member">
+          {this.state.showMember ? <>完成付款</> : <>仍有欠款</> }
+        </div>
         <div className="act-member" id="act-member">
           {member}
+          {/*{member}*/}
+        </div>
+        <div className="paid-btn">
+          <button onClick={()=> this.changeToUndo()} className={this.state.showMember ? "" : "choosenList"}>未付款</button>
+          <button onClick={()=> this.changeToDone()} className={this.state.showMember ? "choosenList" : ""}>已付款</button>
         </div>
       </>;
   }
