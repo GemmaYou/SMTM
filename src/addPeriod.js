@@ -7,6 +7,7 @@ import datePNG from "./img/date.png";
 import atmPNG from "./img/ATM.png";
 import valuePNG from "./img/value.png";
 import userPNG from "./img/user.png";
+import arrow from "./img/arrow.png";
 
 
 class AddPeriod extends React.Component {
@@ -35,20 +36,37 @@ class AddPeriod extends React.Component {
         </div>
         <div className="act-list" id="act-list">
           <div className="item">
-            <img src={cartPNG} className="activity-icon" />
+            <div className="item-icon">
+              <img src={cartPNG} className="activity-icon" />
+              <div>事件描述</div>
+            </div>
             <input type="text" value={place} placeholder="請輸入事件描述" className="addActInfo" onChange={this.props.addOnChangePlace}
              />
           </div>
           <div className="item">
-            <img src={datePNG} className="activity-icon" />
-            <select onChange={this.props.addOnChangeDate}>
-              <option defaultValue="week">每週</option>
-              <option value="month">每月</option>
-              <option value="year">每年</option>
+            <div className="item-icon">
+              <img src={datePNG} className="activity-icon" />
+              <div>初次繳款</div>
+            </div>
+            <input type="date" value={date} className="addActInfo" onChange={this.props.addOnChangeDate}
+             />
+          </div>
+          <div className="item">
+            <div className="item-icon">
+              <img src={arrow} className="activity-icon" />
+              <div>多久一收</div>
+            </div>
+            <select onChange={this.props.addOnChangePeriod}>
+              <option defaultValue="week">每 7 天</option>
+              <option value="month">每 30 天</option>
+              {/*<option value="year">每年</option>*/}
             </select>
           </div>
           <div className="item">
-            <img src={valuePNG} className="activity-icon" />
+            <div className="item-icon">
+              <img src={valuePNG} className="activity-icon" />
+              <div>活動總額</div>
+            </div>
             <input type="number" value={value} placeholder="請輸入每次此次總額" className="addActInfo" onChange={this.props.addOnChangeValue}
              />
           </div>

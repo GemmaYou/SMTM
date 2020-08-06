@@ -12,20 +12,23 @@ import MemberInfo from "./memberInfo";
 class ActSignin extends React.Component {
   constructor (props) {
     super(props);
+    this.changeToSubmit = this.changeToSubmit.bind(this);
+    this.changeToLogin = this.changeToLogin.bind(this);
+    this.state = {
+      submit: true,
+    }
   }
 
   changeToSubmit(){
-    document.getElementById("actSetAccount").style.display = "block";
-    document.getElementById("actSigninAccount").style.display = "none";
-    document.querySelector(".act-member-sign").style.backgroundColor = "#FDFEE8";
-    document.querySelector(".act-member-sub").style.backgroundColor = "white";
+    this.setState({
+      submit: true,
+    })
   }
 
-  changeToSignin(){
-    document.getElementById("actSetAccount").style.display = "none";
-    document.getElementById("actSigninAccount").style.display = "block";
-    document.querySelector(".act-member-sub").style.backgroundColor = "#FDFEE8";
-    document.querySelector(".act-member-sign").style.backgroundColor = "white";
+  changeToLogin(){
+    this.setState({
+      submit: false,
+    })
   }
 
   render() {
@@ -36,10 +39,11 @@ class ActSignin extends React.Component {
       textDecoration: "none"
     };
     return <>
-      <div className="actAccount" id="actAccount">
-        <button className="act-member-sub" onClick={this.changeToSubmit}>尚無帳戶</button>
-        <button className="act-member-sign" onClick={this.changeToSignin}>已有帳戶</button>
-        <ActSubmit user={this.props.user} sub={this.props.sub} anonymous={this.props.anonymous} /><ActSign user={this.props.user} /></div>
+        <div className="actAccount" id="actAccount">
+          <button className={this.state.submit ? "act-member-sub modal-submit-show" : "act-member-sub modal-submit-hide"} onClick={this.changeToSubmit}>尚無帳戶</button>
+          <button className={this.state.submit ? "act-member-sign modal-submit-hide" : "act-member-sign modal-submit-show"} onClick={this.changeToLogin}>已有帳戶</button>
+          {this.state.submit ? <ActSubmit user={this.props.user} sub={this.props.sub} anonymous={this.props.anonymous} /> : <ActSign user={this.props.user} signin={this.props.signin} />}
+        </div>
       </>;
   }
 }

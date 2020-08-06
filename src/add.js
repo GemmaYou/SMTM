@@ -40,7 +40,7 @@ class AddOne extends React.Component {
                     onChange={this.props.addOnChangeKind}
                     checked={kind === "once"}
                   />
-                  一次性活動
+                  一次性活動, 如: 朋友聚餐
                 </label>
               </div>
             </div>
@@ -53,7 +53,7 @@ class AddOne extends React.Component {
                     onChange={this.props.addOnChangeKind}
                     checked={kind === "period"}
                   />
-                  常態活動
+                  常態活動, 如: Netflix家庭共享
                 </label>
               </div>
             </div>

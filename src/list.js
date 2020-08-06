@@ -11,6 +11,19 @@ import trash from "./img/trash.png";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import regeneratorRuntime from "regenerator-runtime";
+
+// let testdate =  new Date()
+// // console.log(testdate);
+// let today = `${testdate.getFullYear()}/${testdate.getMonth() +1 }/${testdate.getDate()}`;
+// console.log(today);
+//
+// let DateDiff = function (sDate1, sDate2) { // sDate1 和 sDate2 是 2016-06-18 格式
+//   let oDate1 = new Date(sDate1);
+//   let oDate2 = new Date(sDate2);
+//   let iDays = parseInt(Math.abs(oDate1 - oDate2) / 1000 / 60 / 60 / 24); // 把相差的毫秒數轉換為天數
+//   return iDays;
+// };
 
 class List extends React.Component {
   constructor (props) {
@@ -18,18 +31,30 @@ class List extends React.Component {
     console.log(props)
     // this.deletAct = this.deletAct.bind(this);
     this.changeActivityToDone = this.changeActivityToDone.bind(this);
-    this.addThroughLink = this.addThroughLink.bind(this);
+    // this.addThroughLink = this.addThroughLink.bind(this);
+    this.Daysago = this.Daysago.bind(this);
+    this.getDate = this.getDate.bind(this);
     this.state = {
       list: [],
       show: false,
       modal: false
     }
   }
+
+  Daysago(days){
+    let d = new Date();
+    let test = d.setDate(d.getDate()-days);
+    let answer = new Date(test);
+    let finaldate = `${answer.getFullYear()}/${answer.getMonth() +1 }/${answer.getDate()}`;
+    // console.log(finaldate);
+    return finaldate
+  }
+
   getActs(){
     firebase.firestore().collection("activity").where('member_email', 'array-contains-any', [this.props.user.email])
-      .onSnapshot(querySnapshot => {
+      .onSnapshot(docs => {
         let userAct = [];
-        querySnapshot.forEach(function(doc) {
+        docs.forEach(function(doc) {
           let data = {
             data: doc.data(),
             id: doc.id
@@ -39,10 +64,105 @@ class List extends React.Component {
         this.setState({
           list: userAct
         });
+        // let date = userAct[0].data.date;
+        // let test = new Date(date);
+        // console.log(test);
+        // let actdate = `${test.getFullYear()}/${test.getMonth() +1 }/${test.getDate()}`;
+        // console.log(actdate);
+        // console.log(DateDiff(today, actdate));
       })
       // .catch(function(error) {
       //     console.log("Error getting documents: ", error);
       // });
+
+      // let act=()=>{
+      //   let userAct = [];
+      //   firebase.firestore().collection("activity")
+      //     .onSnapshot(querySnapshot => {
+      //       querySnapshot.forEach(function(doc) {
+      //         let date = new Date(doc.data().date);
+      //         let actdate = `${date.getFullYear()}/${date.getMonth() +1 }/${date.getDate()}`;
+      //         let data = {
+      //           date: actdate,
+      //           id: doc.id
+      //         }
+      //         userAct.push(data);
+      //       });
+      //       // let date = userAct[0].data.date;
+      //       // let test = new Date(date);
+      //       // console.log(test);
+      //       // let actdate = `${test.getFullYear()}/${test.getMonth() +1 }/${test.getDate()}`;
+      //       // console.log(actdate);
+      //       // console.log(DateDiff(today, actdate));
+      //     })
+      //     return userAct;
+      //   }
+      //
+      // console.log(act());
+
+      // let getValues = async () => {
+      //     let data = await firebase.firestore().collection('activity').get();
+      //     let allAct = [];
+      //     for(const doc of data.docs){
+      //       console.log(doc.id, '=>', doc.data());
+      //       let date = new Date(doc.data().date);
+      //       let actdate = `${date.getFullYear()}/${date.getMonth() +1 }/${date.getDate()}`;
+      //       let info = {
+      //         date: actdate,
+      //         id: doc.id
+      //       }
+      //       allAct.push(info);
+      //       return allAct;
+      //     }
+      //     // if (doc.exists) {
+      //     //   console.log(doc.data());
+      //     //   return doc.data();}
+      //     throw new Error("No such document");
+      // }
+      // console.log(getValues());
+
+      // let allAct = firebase.firestore().collection('activity').get()
+      //   .then(snapshot => {
+      //     let userAct = [];
+      //       snapshot.forEach(doc => {
+      //         let date = new Date(doc.data().date);
+      //         let actdate = `${date.getFullYear()}/${date.getMonth() +1 }/${date.getDate()}`;
+      //         let data = {
+      //           date: actdate,
+      //           data: doc.data(),
+      //           id: doc.id
+      //         }
+      //         userAct.push(data);
+      //       });
+      //     return userAct;
+      //   })
+      //   .catch(err => {
+      //       console.log('Error getting documents', err);
+      //   });
+      // console.log(allAct);
+
+      // firebase.firestore().collection("activity").where('onlyDate','==',this.Daysago(0))
+      //   .onSnapshot(querySnapshot => {
+      //     let userAct = [];
+      //     querySnapshot.forEach(function(doc) {
+      //       console.log(doc.data());
+      //       let data = {
+      //         data: doc.data(),
+      //         id: doc.id
+      //       }
+      //       userAct.push(data);
+      //     });
+      //     // let date = userAct[0].data.date;
+      //     // let test = new Date(date);
+      //     // console.log(test);
+      //     // let actdate = `${test.getFullYear()}/${test.getMonth() +1 }/${test.getDate()}`;
+      //     // console.log(actdate);
+      //     // console.log(DateDiff(today, actdate));
+      //   })
+      //
+      // console.log(this.Daysago(5));
+      // let test = this.getDate();
+      // console.log(test);
   }
 
   componentDidMount(){
@@ -59,6 +179,27 @@ class List extends React.Component {
     }
   }
 
+  getDate(){
+    firebase.firestore().collection('activity').where('onlyDate','==',this.Daysago(0))
+    .get()
+    .then(function(querySnapshot) {
+          let act = [];
+          querySnapshot.forEach(function(doc) {
+            console.log(doc.data())
+            let data = {
+              data: doc.data(),
+              id: doc.id
+            }
+            act.push(data);
+          });
+          console.log(act)
+          return act;
+      })
+      .catch(function(error) {
+          console.log("Error getting documents: ", error);
+      });
+  }
+
   updateShow(){
     this.setState({
       show: !this.state.show
@@ -71,7 +212,7 @@ class List extends React.Component {
     .doc(id)
     .delete()
     .then(() => console.log('Document successfully deleted!'))
-    .then(()=> this.getActs())
+    // .then(()=> this.getActs())
   }
 
   changeActivityToDone(id, i){
@@ -98,11 +239,11 @@ class List extends React.Component {
     }
   }
 
-  addThroughLink(){
-    this.setState({
-      modal: !this.state.modal
-    })
-  }
+  // addThroughLink(){
+  //   this.setState({
+  //     modal: !this.state.modal
+  //   })
+  // }
 
   render() {
     let mystyle = {
@@ -122,17 +263,23 @@ class List extends React.Component {
       list = this.state.list.filter(item => item.data.done);
     }
     console.log(list);
-    let data = list.map((act, i)=>{
-      return <div key={i} className="item">
-          {/*<img src={act.data.done ? done : undo} className="check" onClick={() =>this.changeActivityToDone(act.id, i)}/>*/}
-          <div className="listItemName">
-            <Link to={"/activity/"+act.id} style={linkStyle}>
-              {act.data.name}
-            </Link>
-          </div>
-          <img src={trash} className="trashImg" onClick={()=>{this.deleteAct(act.id)}} />
-        </div>
-      });
+    let data = ()=>{
+        if (this.state.list.length === 0){
+          return <div className="noListNotice">目前沒有活動唷，趕緊新增一個吧！ &#10138;</div>
+        } else {
+          return (
+          list.map((act, i)=>{
+          return <div key={i} className="item">
+              <div className="listItemName">
+                <Link to={"/activity/"+act.id} style={linkStyle}>
+                  {act.data.name}
+                </Link>
+              </div>
+              <img src={trash} className="trashImg" onClick={()=>{this.deleteAct(act.id)}} />
+            </div>
+          }));
+        }
+      }
     return <>
         <div className="listBox">
           {/*<div className="search">
@@ -148,21 +295,21 @@ class List extends React.Component {
               </Link>
             </div>
           {/*<div className="invite" onClick={this.addThroughLink}>使用連結 <img src={invite} className="inviteImg" /></div>*/}
-          <div className="list">{data}</div>
+          <div className="list">{data()}</div>
           <div className="btn">
             {/*<button onClick={()=> this.updateShow("all")} id="allBtn" className={this.state.show === "all" ? 'choosenList' : ""}>全部</button>*/}
             <button onClick={()=> this.updateShow("undo")} id="undoBtn" className={this.state.show ? "" : "choosenList"}>未完成</button>
             <button onClick={()=> this.updateShow("done")} id="doneBtn" className={this.state.show ? 'choosenList' : ""}>已完成</button>
           </div>
         </div>
-        {this.state.modal ?
+        {/*{this.state.modal ?
           <div id="myModal" className="list-modal">
             <div className="list-modal-content">
               <span className="list-modal-close" onClick={this.addThroughLink}>
                 &times;
               </span>
             </div>
-          </div> : <></>}
+          </div> : <></>}*/}
       </>;
   }
 }

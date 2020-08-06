@@ -35,17 +35,26 @@ class AddOnce extends React.Component {
         </div>
         <div className="act-list" id="act-list">
           <div className="item">
-            <img src={locationPNG} className="activity-icon" />
+            <div className="item-icon">
+              <img src={locationPNG} className="activity-icon" />
+              <div>舉辦地點</div>
+            </div>
             <input type="text" value={place} placeholder="請輸入活動地點" className="addActInfo" onChange={this.props.addOnChangePlace}
              />
           </div>
           <div className="item">
-            <img src={datePNG} className="activity-icon" />
-            <input type="datetime-local" value={date} className="addActInfo" onChange={this.props.addOnChangeDate}
+            <div className="item-icon">
+              <img src={datePNG} className="activity-icon" />
+              <div>舉辦日期</div>
+            </div>
+            <input type="datetime-local" value={date} className="addActInfo date" onChange={this.props.addOnChangeDate}
              />
           </div>
           <div className="item">
-            <img src={valuePNG} className="activity-icon" />
+            <div className="item-icon">
+              <img src={valuePNG} className="activity-icon" />
+              <div>活動總額</div>
+            </div>
             <input type="number" value={value} placeholder="請輸入此次總額" className="addActInfo" onChange={this.props.addOnChangeValue}
              />
           </div>
