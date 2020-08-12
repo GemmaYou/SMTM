@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import './style.css';
+import './component/style.css';
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
-import App from "./App.js";
+import App from "./component/App.js";
 
 ReactDOM.render(<Router><App/></Router>, document.querySelector("#root"));

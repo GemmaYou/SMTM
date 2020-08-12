@@ -1,0 +1,14 @@
+{
+  "name": "CashBack",
+  "short_name": "CashBack",
+  "icons": [{
+    "src": "/src/img/logo.jpg",
+    "sizes": "800x800",
+    "type": "image/jpg"
+  }],
+  "start_url": "/#",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#133E4D",
+  "theme_color": "#fca81e"
+}

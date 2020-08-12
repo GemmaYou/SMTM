@@ -39,40 +39,200 @@ let Daysago = function(days){
   return finaldate
 }
 
-let getDate = admin.firestore().collection('activity').where('onlyDate','==',Daysago(0))
-.get()
-.then(function(querySnapshot) {
-      let act = [];
-      querySnapshot.forEach(function(doc) {
-        console.log(doc.data())
-        let data = {
-          data: doc.data(),
-          id: doc.id
-        }
-        act.push(data);
-      });
-      console.log(act)
-      return act
-  })
-  .catch(function(error) {
-      console.log("Error getting documents: ", error);
-  });
+let isInt = function(value) {
+  return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value))
+}
+
+// let getDate = admin.firestore().collection('activity').where('onlyDate','==',Daysago(0))
+// .get()
+// .then(function(querySnapshot) {
+//       let act = [];
+//       querySnapshot.forEach(function(doc) {
+//         console.log(doc.data())
+//         let data = {
+//           data: doc.data(),
+//           id: doc.id
+//         }
+//         act.push(data);
+//       });
+//       console.log(act)
+//       return act
+//   })
+//   .catch(function(error) {
+//       console.log("Error getting documents: ", error);
+//   });
 
 let getMemberEmail = (data)=>{
   list = data.filter(item => !item.done);
 }
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
-
 exports.sendEmailEveryday = functions.pubsub.schedule('0 0 * * *')
   .timeZone('Asia/Taipei')
   .onRun((context) => {
+    admin.firestore().collection('activity')
+    .get()
+    .then(docs => {
+      docs.forEach(function(doc){
+        let data = doc.data();
+        let authData=nodemailer.createTransport({
+          host: 'smtp.gmail.com',
+          port: 465,
+          secure: true,
+          auth: {
+            user: SENDER_EMAIL,
+            pass: SENDER_PASSWORD
+          }
+        });
+
+        let date = new Date();
+        let today = `${date.getFullYear()}/${date.getMonth() +1 }/${date.getDate()}`;
+        let dayGap = DateDiff(today,data.onlyDate);
+        let divisionSeven = dayGap/7;
+        let divisionThirty = dayGap/30;
+
+        if( data.kind === "once" ){
+          if ( dayGap === 7 && !data.done){
+            //7 days, once to member
+            for (i = 0; i < data.member_details.length; i++){
+              let member = data.member_details[i];
+              authData.sendMail({
+                from:'cashback.official.tw@gmail.com',
+                to: `${data.member_details[i].email}`,
+                subject:`【欠款提醒】${data.name}`,
+                text:`活動：${data.name} 您尚未付款唷！`,
+                html:`<p style="font-size: 15px;">${data.member_details[i].name} ，您好<br/>
+                <br/>
+                您有欠款 NT$${member.perValue} 尚未繳清，請儘速還款，謝謝！<br/>
+                另，提供您主揪 ${data.holder.name} 之聯絡資訊： ${data.holder.email}。<br/>
+                更多細節請至 <a href="https://smtm-5618c.web.app/#/">CashBack 官網</a> 確認。</p>
+                <p style="font-size:12px;color: grey">**此為系統自動通知，請勿回覆此信件！</p>`,
+              })
+              .then(res=>console.log("successfully send email to member, 7 days, once"))
+              .catch(err=>console.log(err));
+            }
+
+            //7 days, once to holder
+            let member = data.member_details.filter(item => !item.done);
+            if (member.length > 0){
+              let htmlList = member.map((m,i)=>{
+                return (`<tr><td style="border-bottom:1px solid #133E4D; width:50%; text-align:center; height:28px;"">${m.name}</td><td style="border-bottom:1px solid #133E4D; width:50%; text-align:center; height:28px;">${m.perValue}</td></tr>`)
+              })
+              authData.sendMail({
+                from:'cashback.official.tw@gmail.com',
+                to: `${data.holder.email}`,
+                subject:`【活動提醒】${data.name} `,
+                text:`活動：${data.name} 的這些人尚未還款唷！`,
+                html: `<p style="font-size: 15px;">${data.holder.name} ，您好<br/>
+                <br/>
+                以下為尚未還款之用戶，稍早皆已寄出還款提醒。<br/>
+                更多細節請至 <a href="https://smtm-5618c.web.app/#/">CashBack 官網</a> 確認！</p>
+                <table style="width:300px; border-collapse:collapse; border:1px solid #133E4D; font-size: 15px;"><tbody><tr><th style="border-bottom:1px solid #133E4D; width:50%; height:28px; background-color: #133E4D; color: white;">用戶</th><th style="border-bottom:1px solid #133E4D; width:50%; height:28px; background-color: #133E4D; color: white;">欠款 (NT$)</th></tr>${htmlList.join('')}</tbody></table>
+                <br/>
+                <p style="font-size:12px;color: grey">**此為系統自動通知，請勿回覆此信件！</p>`,
+              })
+              .then(res=>console.log("successfully send email to holder, 7days, once"))
+              .catch(err=>console.log(err));
+            }
+          }
+        } else if ( data.kind === "period" && !data.done && data.period === "week"){
+          if (isInt(divisionSeven)){
+            //7days, period to member
+            for (i = 0; i < data.member_details.length; i++){
+              let member = data.member_details[i];
+              authData.sendMail({
+                from:'cashback.official.tw@gmail.com',
+                to: `${data.member_details[i].email}`,
+                subject:`【繳款提醒】${data.name}`,
+                text:`活動：${data.name} 繳款提醒！`,
+                html:`<p style="font-size: 15px;">${data.member_details[i].name} ，您好<br/>
+                <br/>
+                提醒您繳納每週費用 NT$${member.perValue} 謝謝！<br/>
+                另，提供您主揪 ${data.holder.name} 之聯絡資訊： ${data.holder.email}。<br/>
+                更多細節請至 <a href="https://smtm-5618c.web.app/#/">CashBack 官網</a> 確認。</p>
+                <p style="font-size:12px;color: grey">**此為系統自動通知，請勿回覆此信件！</p>`,
+              })
+              .then(res=>console.log("successfully send email to member, 7 days, period"))
+              .catch(err=>console.log(err));
+            }
+
+            //7 days, period to holder
+            let member = data.member_details.filter(item => !item.done);
+            if (member.length > 0){
+              let htmlList = member.map((m,i)=>{
+                return (`<tr><td style="border-bottom:1px solid #133E4D; width:50%; text-align:center; height:28px;"">${m.name}</td><td style="border-bottom:1px solid #133E4D; width:50%; text-align:center; height:28px;">${m.perValue}</td></tr>`)
+              })
+              authData.sendMail({
+                from:'cashback.official.tw@gmail.com',
+                to: `${data.holder.email}`,
+                subject:`【活動提醒】${data.name} `,
+                text:`活動：${data.name} 繳款日已到！`,
+                html:`<p style="font-size: 15px;">${data.holder.name} ，您好<br/>
+                <br/>
+                以下為目前有參加活動之用戶，稍早皆已寄出繳款提醒。<br/>
+                更多細節請至 <a href="https://smtm-5618c.web.app/#/">CashBack 官網</a> 確認！</p>
+                <table style="width:300px; border-collapse:collapse; border:1px solid #133E4D; font-size: 15px;"><tbody><tr><th style="border-bottom:1px solid #133E4D; width:50%; height:28px; background-color: #133E4D; color: white;">用戶</th><th style="border-bottom:1px solid #133E4D; width:50%; height:28px; background-color: #133E4D; color: white;">欠款 (NT$)</th></tr>${htmlList.join('')}</tbody></table>
+                <br/>
+                <p style="font-size:12px;color: grey">**此為系統自動通知，請勿回覆此信件！</p>`,
+              })
+              .then(res=>console.log("successfully send email to holder, 7days, period"))
+              .catch(err=>console.log(err));
+            }
+          }
+        }else if ( data.kind === "period" && !data.done && data.period === "month"){
+          if (isInt(divisionThirty)){
+            //30 days, period to member
+            for (i = 0; i < data.member_details.length; i++){
+              let member = data.member_details[i];
+              authData.sendMail({
+                from:'cashback.official.tw@gmail.com',
+                to: `${data.member_details[i].email}`,
+                subject:`【繳款提醒】${data.name}`,
+                text:`活動：${data.name} 繳款提醒！`,
+                html:`<p style="font-size: 15px;">${data.member_details[i].name} ，您好<br/>
+                <br/>
+                提醒您繳納每週費用 NT$${member.perValue} 謝謝！<br/>
+                另，提供您主揪 ${data.holder.name} 之聯絡資訊： ${data.holder.email}。<br/>
+                更多細節請至 <a href="https://smtm-5618c.web.app/#/">CashBack 官網</a> 確認。</p>
+                <p style="font-size:12px;color: grey">**此為系統自動通知，請勿回覆此信件！</p>`,
+              })
+              .then(res=>console.log("successfully send email to member, 30 days, period"))
+              .catch(err=>console.log(err));
+            }
+
+            //30 days, period to holder
+            let member = data.member_details.filter(item => !item.done);
+            if (member.length > 0){
+              let htmlList = member.map((m,i)=>{
+                return (`<tr><td style="border-bottom:1px solid #133E4D; width:50%; text-align:center; height:28px;"">${m.name}</td><td style="border-bottom:1px solid #133E4D; width:50%; text-align:center; height:28px;">${m.perValue}</td></tr>`)
+              })
+              authData.sendMail({
+                from:'cashback.official.tw@gmail.com',
+                to: `${data.holder.email}`,
+                subject:`【活動提醒】${data.name} `,
+                text:`活動：${data.name} 繳款日已到！`,
+                html:`<p style="font-size: 15px;">${data.holder.name} ，您好<br/>
+                <br/>
+                以下為目前有參加活動之用戶，稍早皆已寄出繳款提醒。<br/>
+                更多細節請至 <a href="https://smtm-5618c.web.app/#/">CashBack 官網</a> 確認！</p>
+                <table style="width:300px; border-collapse:collapse; border:1px solid #133E4D; font-size: 15px;"><tbody><tr><th style="border-bottom:1px solid #133E4D; width:50%; height:28px; background-color: #133E4D; color: white;">用戶</th><th style="border-bottom:1px solid #133E4D; width:50%; height:28px; background-color: #133E4D; color: white;">欠款 (NT$)</th></tr>${htmlList.join('')}</tbody></table>
+                <br/>
+                <p style="font-size:12px;color: grey">**此為系統自動通知，請勿回覆此信件！</p>`,
+              })
+              .then(res=>console.log("successfully send email to holder, 30days, period"))
+              .catch(err=>console.log(err));
+            }
+          }
+        }
+
+      })
+      return null;
+    })
+    .catch(function(error) {
+        console.log("Error getting documents: ", error);
+    })
+  })
+
+    /*
     admin.firestore().collection('activity').where('onlyDate','==',Daysago(7))
     .get()
     .then(function(querySnapshot) {
@@ -263,7 +423,8 @@ exports.sendEmailEveryday = functions.pubsub.schedule('0 0 * * *')
       .catch(function(error) {
           console.log("Error getting documents: ", error);
       });
-})
+      */
+// })
 //
 //       });
 //

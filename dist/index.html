@@ -11,6 +11,7 @@
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"
   />
+  <link rel="manifest" href="/manifest.json">
 </head>
 
 <body>
@@ -24,17 +25,22 @@
 
   <script>
     // Your web app's Firebase configuration
-    var firebaseConfig = {
-      apiKey: "AIzaSyB2nj46DeqUcu7IeXDHxRi_35OLLHHtZGY",
-      authDomain: "smtm-5618c.firebaseapp.com",
-      databaseURL: "https://smtm-5618c.firebaseio.com",
-      projectId: "smtm-5618c",
-      storageBucket: "smtm-5618c.appspot.com",
-      messagingSenderId: "40463161734",
-      appId: "1:40463161734:web:18c2a9654b39047996b407"
-    };
+    // var firebaseConfig = {
+    //   apiKey: "AIzaSyB2nj46DeqUcu7IeXDHxRi_35OLLHHtZGY",
+    //   authDomain: "smtm-5618c.firebaseapp.com",
+    //   databaseURL: "https://smtm-5618c.firebaseio.com",
+    //   projectId: "smtm-5618c",
+    //   storageBucket: "smtm-5618c.appspot.com",
+    //   messagingSenderId: "40463161734",
+    //   appId: "1:40463161734:web:18c2a9654b39047996b407"
+    // };
     // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
+    // firebase.initializeApp(firebaseConfig);
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js')
+        .then(reg => console.log('完成 SW 設定!', reg))
+        .catch(err => console.log('Error!', err));
+    }
   </script>
 </body>
 
