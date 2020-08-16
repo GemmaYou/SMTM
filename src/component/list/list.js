@@ -5,45 +5,10 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { DB } from "../db";
 import regeneratorRuntime from "regenerator-runtime";
 
-// let testdate =  new Date()
-// console.log(testdate);
-// let today = `${testdate.getFullYear()}/${testdate.getMonth() +1 }/${testdate.getDate()}`;
-// console.log(today);
-//
-// let Daysago = function(days){
-//   let d = new Date();
-//   let test = d.setDate(d.getDate()-days);
-//   let answer = new Date(test);
-//   let finaldate = `${answer.getFullYear()}/${answer.getMonth() +1 }/${answer.getDate()}`;
-//   // console.log(finaldate);
-//   return finaldate
-// }
-// console.log(Daysago(7));
-//
-// let DateDiff = function (sDate1, sDate2) { // sDate1 和 sDate2 是 2016-06-18 格式
-//   let oDate1 = new Date(sDate1);
-//   let oDate2 = new Date(sDate2);
-//   let iDays = parseInt(Math.abs(oDate1 - oDate2) / 1000 / 60 / 60 / 24); // 把相差的毫秒數轉換為天數
-//   return iDays;
-// };
-//
-// let dayGap = DateDiff(today,"2020/7/26");
-// console.log(dayGap);
-//
-// let isInt = function(value) {
-//   return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value))
-// }
-//
-// let divisionSeven = dayGap/7;
-// let divisionThirty = dayGap/30;
-//
-// let haha = isInt(divisionSeven);
-// console.log(haha);
-
 class List extends React.Component {
   constructor (props) {
     super(props);
-    console.log(props)
+    // console.log(props)
     this.deleteAct = this.deleteAct.bind(this);
     this.changeActivityToDone = this.changeActivityToDone.bind(this);
     // this.daysago = this.daysago.bind(this);
@@ -54,31 +19,6 @@ class List extends React.Component {
       modal: false
     }
   }
-
-  // daysago(days){
-  //   let d = new Date();
-  //   let test = d.setDate(d.getDate()-days);
-  //   let answer = new Date(test);
-  //   let finaldate = `${answer.getFullYear()}/${answer.getMonth() +1 }/${answer.getDate()}`;
-  //   return finaldate
-  // }
-
-  // getActs(){
-  //   DB.collection("activity").where('member_email', 'array-contains-any', [this.props.user.email])
-  //     .onSnapshot(docs => {
-  //       let userAct = [];
-  //       docs.forEach(function(doc) {
-  //         let data = {
-  //           data: doc.data(),
-  //           id: doc.id
-  //         }
-  //         userAct.push(data);
-  //       });
-  //       this.setState({
-  //         list: userAct
-  //       });
-  //     })
-  // }
 
   getActs(){
     DB.collection("activity").where('member_email', 'array-contains-any', [this.props.user.email])
@@ -138,7 +78,7 @@ class List extends React.Component {
   }
 
   deleteAct(id){
-    console.log(id);
+    // console.log(id);
     DB.collection('activity')
     .doc(id)
     .delete()
@@ -184,7 +124,7 @@ class List extends React.Component {
     } else if (this.state.show){
       list = this.state.list.filter(item => item.data.done);
     }
-    console.log(list);
+    // console.log(list);
     let data = ()=>{
         if (this.state.list.length === 0){
           return <div className="noListNotice">目前沒有活動唷，趕緊新增一個吧！ &#10138;</div>

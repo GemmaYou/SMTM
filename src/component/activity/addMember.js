@@ -101,7 +101,7 @@ class AddMember extends React.Component {
             member_email: oldMemberEmail
           }, { merge: true })
         this.props.addMember();
-        this.props.getData(this.props.id);
+        // this.props.getData(this.props.id);
       }
     }
   }

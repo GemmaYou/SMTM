@@ -23,6 +23,7 @@ class Activity extends React.Component {
     this.resize = this.resize.bind(this);
     this.changeMemberCheck = this.changeMemberCheck.bind(this);
     this.state = {
+      id: this.props.match.params.id,
       location: "",
       copy: "",
       modal: false,
@@ -55,7 +56,7 @@ class Activity extends React.Component {
     // } else if (!this.state.firstTime){
     //   this.getData(id);
     // }
-    this.getDataFirst(id);
+    this.getDataFirst(this.state.id);
     this.setState({
       location: window.location.href
     })
@@ -75,7 +76,7 @@ class Activity extends React.Component {
             firstData: false
           })
       } else {
-          alert("此活動不存在唷，請再次確認連結是否正確！");
+          // alert("此活動不存在唷，請再次確認連結是否正確！");
           console.log("No such document!");
       }
     });
@@ -104,6 +105,7 @@ class Activity extends React.Component {
     this.setState({
       modal: !this.state.modal
     })
+    this.getDataFirst(this.state.id);
   }
 
   deleteMember (e) {
@@ -223,7 +225,8 @@ class Activity extends React.Component {
             }
           } else {
             let member = data.member_details.filter(detail => detail.email === user.email);
-            if (!member.done){
+            console.log(member[0].done)
+            if (!member[0].done){
               return (
                 <div id="myModal" className="modal">
                   <div className="modal-content">

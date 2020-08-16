@@ -312,7 +312,7 @@ button:hover {
     height: 700px;
     margin: 0 auto 100px auto;
     grid-template-columns: 20% 20% 15% 15% 30%;
-    grid-template-rows: 20% auto 50px;;
+    grid-template-rows: 20% auto 50px;
   }
 
   .main>.homePage>section>.homePageIntro>.words {
@@ -479,7 +479,7 @@ button:hover {
 
 @media all and (max-width: 850px) {
   .scroll-down {
-    grid-area: 2 / 1 / 3 / 2;
+    grid-area: 3 / 1 / 4 / 2;
     margin: 0;
     display: flex;
     flex-direction: row-reverse;
@@ -616,7 +616,7 @@ button:hover {
 @media all and (max-width: 850px) {
   .main>.homePage>section>.belowIntro1 {
     grid-template-columns: 100%;
-    grid-template-rows: 50% 50%;
+    grid-template-rows: 1fr 1fr 50px;
     height: 700px;
   }
 
@@ -645,7 +645,7 @@ button:hover {
 @media all and (max-width: 500px) {
   .main>.homePage>section>.belowIntro1 {
     grid-template-columns: 100%;
-    grid-template-rows: 400px 200px;
+    grid-template-rows: 375px 175px 50px;
   }
 
   .main>.homePage>section>.belowIntro1>.belowIntroImg>img {
@@ -751,7 +751,7 @@ button:hover {
 @media all and (max-width: 850px) {
   .main>.homePage>section>.belowIntro2 {
     grid-template-columns: 100%;
-    grid-template-rows: 50% 50%;
+    grid-template-rows: 1fr 1fr 50px;
     height: 700px;
   }
 
@@ -780,7 +780,7 @@ button:hover {
 @media all and (max-width: 500px) {
   .main>.homePage>section>.belowIntro2 {
     grid-template-columns: 100%;
-    grid-template-rows: 400px 200px;
+    grid-template-rows: 375px 175px 50px;
     height: 600px;
   }
 
@@ -1728,6 +1728,10 @@ button:hover {
 @media all and (max-width: 500px) {
   .addActInfo {
     width: 88%;
+  }
+
+  .addOnceBox>.act-list>.item {
+    width: 98%;
   }
 
   .addOnceBox>.act-list>.item>.date {

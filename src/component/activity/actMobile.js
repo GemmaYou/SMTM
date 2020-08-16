@@ -66,29 +66,6 @@ class Mobile extends React.Component {
     }
   }
 
-  // changeMemberCheck(e){
-  //   let id = this.props.id;
-  //   let user = this.props.user;
-  //   let data = this.props.data;
-  //   let member = this.props.data.member_email;
-  //   let details = this.props.data.member_details;
-  //   let i = member.indexOf(e)-1;
-  //
-  //   if (user.email === e || user.email === data.holder.email){
-  //     details[i].done = !details[i].done;
-  //
-  //     DB.collection("activity").doc(id).update({
-  //       member_details: details
-  //      })
-  //     .catch(function(error) {
-  //         console.error("Error removing document: ", error);
-  //     });
-  //   } else {
-  //     alert("只有本人或舉辦人能改變各自的活動狀態唷！")
-  //   }
-  //   this.props.getData(this.props.id);
-  // }
-
   componentDidMount(){
     let user = this.props.user;
     let data = this.props.data;
@@ -163,8 +140,8 @@ class Mobile extends React.Component {
             <div>多久一收</div>
           </div>
           <select value={data.period} onChange={this.props.changePeriod}>
-            <option value="week">每週</option>
-            <option value="month">每月</option>
+            <option value="week">每 7 天</option>
+            <option value="month">每 30 天</option>
             {/*<option value="year">每年</option>*/}
           </select>
         </div>)

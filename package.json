@@ -5,12 +5,11 @@
   "main": "index.js",
   "homepage": "https://gemmayou.github.io/SMTM/",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
     "start": "webpack-dev-server",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "test": "jest",
-    "test-update-snapshot": "jest --updateSnapshot"
+    "deploy": "gh-pages -d build"
   },
   "keywords": [],
   "author": "",
@@ -22,7 +21,6 @@
     "babel-loader": "^8.1.0",
     "css-loader": "^3.6.0",
     "file-loader": "^6.0.0",
-    "jest": "^26.3.0",
     "redux-devtools": "^3.5.0",
     "style-loader": "^1.2.1",
     "webpack": "^4.43.0",
