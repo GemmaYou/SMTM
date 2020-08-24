@@ -26,6 +26,7 @@ class App extends React.Component {
     this.closeHomepageSignin = this.closeHomepageSignin.bind(this);
     this.convertDate = this.convertDate.bind(this);
     this.signin = this.signin.bind(this);
+    // this.dateNow = this.dateNow.bind(this);
     this.state = {
       user: {
         login: false,
@@ -200,6 +201,19 @@ class App extends React.Component {
     });
   };
 
+  // dateNow(){
+  //   let today = new Date();
+  //   let dd = String(today.getDate()).padStart(2, '0');
+  //   let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  //   let yyyy = today.getFullYear();
+  //   let date = yyyy + '-' + mm + '-' + dd ;
+  //   let hh = String(today.getHours()).padStart(2, '0');
+  //   let minute = String(today.getMinutes()).padStart(2, '0');
+  //   let time = hh + ":" + minute;
+  //   let dateTime = date+'T'+time;
+  //   return dateTime;
+  // }
+
   addOneToTwo(){
     let name = this.state.additem.name;
     let kind = this.state.additem.kind;
@@ -344,6 +358,7 @@ class App extends React.Component {
   }
 
   render() {
+    // console.log(this.state.additem);
     let mystyle = {
       color: "black",
       textDecoration: "none"

@@ -20,6 +20,7 @@ class AddOnce extends React.Component {
       alignItems: "center",
       display: "flex"
     };
+
     return <>
       <div className="addOnceBox">
         <div className="activityName">

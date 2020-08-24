@@ -29,10 +29,6 @@ class SigninModal extends React.Component {
 
   render() {
     let user =this.props.user;
-    let mystyle = {
-      color: "black",
-      textDecoration: "none"
-    };
     return <>
         <div className="actAccount" id="actAccount">
           <button className={this.state.submit ? "act-member-sub modal-submit-show" : "act-member-sub modal-submit-hide"} onClick={this.changeToSubmit}>尚無帳戶</button>

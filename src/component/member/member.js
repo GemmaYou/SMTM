@@ -14,10 +14,6 @@ class Member extends React.Component {
 
   render() {
     let user =this.props.user;
-    let mystyle = {
-      color: "black",
-      textDecoration: "none"
-    };
     return <><MemberInfo user={this.props.user}/></>;
   }
 }

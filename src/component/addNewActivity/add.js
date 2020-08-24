@@ -10,16 +10,6 @@ class AddOne extends React.Component {
 
   render() {
     const { name, kind } = this.props.additem;
-    let mystyle = {
-      color: "#303030",
-      textDecoration: "none"
-    };
-    let linkStyle = {
-      color: "#000000",
-      textDecoration: "none",
-      alignItems: "center",
-      display: "flex"
-    };
     return <>
         <div className="addBox">
           <div className="addActNameDiv">

@@ -145,9 +145,18 @@ button:hover {
   padding-top: 70px;
 }
 
+.main>.homePage>section:first-child {
+  height: 600px;
+  padding-top: 70px;
+}
+
 @media all and (max-width: 850px) {
   .main>.homePage>section {
+    height: 700px;
     padding-top: 150px;
+  }
+  .main>.homePage>section:first-child {
+    height: 750px;
   }
 }
 
@@ -884,13 +893,12 @@ button:hover {
 
 .listBox>.list>.item {
   display: grid;
-  grid-template-columns: auto 40px;
+  grid-template-columns: auto 45px;
   grid-auto-rows: 100%;
   align-items: center;
   margin-top: 10px;
   border: 1px solid #FFE699;
   text-align: left;
-  width: 99.5%;
 }
 
 .listBox>.list>.item>.listItemName {
@@ -982,6 +990,7 @@ button:hover {
   margin: auto;
   border: none;
   text-align: center;
+  text-overflow: ellipsis;
 }
 
 .activityBox>.undo-member {
@@ -1339,6 +1348,11 @@ button:hover {
 
   .activityBox>.condition {
     margin-left: 10%;
+  }
+
+  .activityBox>.userName {
+    width: 40%;
+    text-overflow: ellipsis;
   }
 }
 

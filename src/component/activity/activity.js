@@ -372,10 +372,6 @@ class Activity extends React.Component {
 
   render() {
     let data = this.state.data;
-    let mystyle = {
-      color: "#303030",
-      textDecoration: "none"
-    };
     let copied = ()=>{
       if(this.state.copy === ""){
         return null

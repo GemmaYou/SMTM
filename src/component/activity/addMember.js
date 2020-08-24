@@ -107,10 +107,6 @@ class AddMember extends React.Component {
   }
 
   render() {
-    let mystyle = {
-      color: "#303030",
-      textDecoration: "none"
-    };
     return <div className="addMember">
       <h3 className="addMemberTitle">新增債戶</h3>
       <div>暱稱：<input id="addMemberText" defaultValue={this.props.user.name} placeholder="請填入名稱" onChange={this.addMemberName}/></div>

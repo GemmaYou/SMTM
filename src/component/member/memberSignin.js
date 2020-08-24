@@ -13,7 +13,7 @@ class MemberSignin extends React.Component {
     this.changeToSubmit = this.changeToSubmit.bind(this);
     this.changeToLogin = this.changeToLogin.bind(this);
     this.state = {
-      submit: true,
+      submit: false,
     }
   }
 
@@ -31,10 +31,6 @@ class MemberSignin extends React.Component {
 
   render() {
     let user =this.props.user;
-    let mystyle = {
-      color: "black",
-      textDecoration: "none"
-    };
     return <>
         <div className="account" id="account">
           <button className={this.state.submit ? "member-sub modal-submit-show" : "member-sub modal-submit-hide"} onClick={this.changeToSubmit}>註冊帳戶</button>

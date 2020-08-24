@@ -108,10 +108,6 @@ class List extends React.Component {
   }
 
   render() {
-    let mystyle = {
-      color: "#303030",
-      textDecoration: "none"
-    };
     let linkStyle = {
       color: "#000000",
       textDecoration: "none",
