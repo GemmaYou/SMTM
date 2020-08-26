@@ -63,13 +63,28 @@ class Activity extends React.Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this.resize);
+    clearInterval(this.resize, this.getDataFirst);
   }
+
+  // getDataFirst(id){
+  //   DB.collection("activity").doc(id)
+  //   .get()
+  //   .then(doc => {
+  //     if (doc.exists) {
+  //         this.setState({
+  //           data: doc.data(),
+  //           firstData: false
+  //         })
+  //     } else {
+  //         // alert("此活動不存在唷，請再次確認連結是否正確！");
+  //         console.log("No such document!");
+  //     }
+  //   });
+  // }
 
   getDataFirst(id){
     DB.collection("activity").doc(id)
-    .get()
-    .then(doc => {
+    .onSnapshot(doc => {
       if (doc.exists) {
           this.setState({
             data: doc.data(),
@@ -81,17 +96,6 @@ class Activity extends React.Component {
       }
     });
   }
-
-  // getData(id){
-  //   DB.collection("activity").doc(id)
-  //   .onSnapshot(doc => {
-  //     if (doc.exists) {
-  //         this.setState({
-  //           data: doc.data()
-  //         })
-  //     }
-  //   });
-  // }
 
   resize() {
     if (window.innerWidth <= 1000){
@@ -319,14 +323,18 @@ class Activity extends React.Component {
 
   changeValue(e){
     if (this.props.user.login){
-      let docId = this.props.match.params.id;
-      DB.collection("activity").doc(docId).update({
-         value: e.target.value
-       })
-      .catch(function(error) {
-          console.error("Error removing document: ", error);
-      });
-      this.getDataFirst(this.props.match.params.id);
+      if(parseInt(e.target.value) > 0){
+        let docId = this.props.match.params.id;
+        DB.collection("activity").doc(docId).update({
+           value: e.target.value
+         })
+        .catch(function(error) {
+            console.error("Error removing document: ", error);
+        });
+        this.getDataFirst(this.props.match.params.id);
+      } else {
+        alert("總額不可小於0唷！")
+      }
     } else {
       alert("會員才能修改活動唷！");
       this.props.history.push("/member");

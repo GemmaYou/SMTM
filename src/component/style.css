@@ -905,6 +905,13 @@ button:hover {
   grid-area: 1 / 1 / 2 / 2;
   cursor: pointer;
   margin-left: 10px;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.listBox>.list>.item>.listItemName>a {
+  text-overflow: ellipsis;
 }
 
 .listBox>.list>.item>img {
@@ -1173,6 +1180,12 @@ button:hover {
   height: 50px;
 }
 
+.activityBox>.act-member>.item>.billDetail {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .activityBox>.act-member>.item>.tooltip>img,
 .activityBox>.act-member>.item>.trashImg {
   cursor: pointer;
@@ -1429,9 +1442,17 @@ button:hover {
 
 .activityBox>.modal>.modal-content>.hostAlert>.undoBox>.undoList>.undoMember {
   display: grid;
-  grid-template-columns: 47.5% 5% 47.5%;
+  grid-template-columns: 40% 10% 50%;
   grid-auto-rows: 30px;
   align-items: center;
+}
+
+.activityBox>.modal>.modal-content>.hostAlert>.undoBox>.undoList>.undoMember>.undoMemberValue,
+.activityBox>.modal>.modal-content>.hostAlert>.undoBox>.undoList>.undoMember>.undoMemberName {
+  max-width: 112.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 5px;
 }
 
 .close:hover,

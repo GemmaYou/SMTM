@@ -52,7 +52,7 @@ class Desk extends React.Component {
         }
         return (<div key={i} id={m.email} className="item">
             {img()}
-            <div>{m.name} 欠 NT${m.perValue}</div>
+            <div className="billDetail">{m.name} 欠 NT${m.perValue}</div>
             {this.props.data.done ? <></> : trashImg()}
           </div>)
         }))
@@ -170,7 +170,7 @@ class Desk extends React.Component {
               <img src="/src/img/value.png" className="activity-icon" />
               <div>活動總額</div>
             </div>
-            <div className="NT act-icon-intro"><input type="number" className="last-input" defaultValue={data.value} onChange={this.props.changeValue}/></div>
+            <div className="NT act-icon-intro"><input type="number" className="last-input" defaultValue={data.value} onChange={this.props.changeValue} min="1"/></div>
           </div>
           <div className="item">
             <div className="item-icon">
